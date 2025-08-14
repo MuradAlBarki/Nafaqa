@@ -2,34 +2,25 @@
 
 namespace App\Policies;
 
+use App\Enums\PaymentStatusEnum;
 use App\Models\Payment;
 use App\Models\User;
+use App\StatusEnum;
 use Illuminate\Auth\Access\Response;
 
 class PaymentPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+
+    public function before(User $user, $ability)
     {
-        return false;
+        if ($user->hasRole('admin')) {
+            return true;
+        }
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Payment $payment): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can create models.
-     */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('payments.create');
     }
 
     /**
@@ -37,30 +28,16 @@ class PaymentPolicy
      */
     public function update(User $user, Payment $payment): bool
     {
-        return false;
+        return $user->can('payments.update');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Payment $payment): bool
+    public function pay(User $user, Payment $payment): bool
     {
-        return false;
+        return $payment->status == PaymentStatusEnum::Entry;
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Payment $payment): bool
+     public function changeStatus(User $user, User $model): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Payment $payment): bool
-    {
-        return false;
+        return $user->can('payments.changeStatus');
     }
 }

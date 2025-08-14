@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     ->name('users.toggleStatus');
 
     Route::resource('divorce-cases', DivorceCaseController::class);
+    Route::get('my-divorce-cases', [DivorceCaseController::class,'userIndex'])->name('divorce-cases.userIndex');
 
     Route::resource('divorce-cases.children', ChildController::class);
     Route::resource('divorce-cases.obligations', ObligationController::class)->except('index');

@@ -14,7 +14,7 @@ class PermissionSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $permissions = ['viewAny', 'view', 'create', 'update', 'changeStatus', 'delete'];
-        $features = ['users', 'profileRoles', 'divorceCases', 'children'];
+        $features = ['users', 'profileRoles', 'divorceCases', 'children', 'obligations', 'payments'];
 
         $allPermissionNames = [];
 

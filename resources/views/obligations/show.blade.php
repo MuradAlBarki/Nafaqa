@@ -51,4 +51,20 @@
         </div>
 
     </div>
+<div class="mt-8 flex items-center justify-between bg-white px-3 py-2 rounded shadow-sm border-b">
+    <h3 class="text-lg font-semibold">
+        {{ __('Payments') }}
+    </h3>
+
+@can('create', \App\Models\Payment::class)
+    <a href="{{ route('divorce-cases.payments.create', ['divorce_case' => $divorceCase->id]) }}" 
+       class="inline-block px-4 py-2 bg-indigo-100 text-indigo-700 rounded shadow hover:bg-indigo-200 hover:text-indigo-900 transition">
+        + {{ __('Create') }}
+    </a>
+@endcan
+
+</div>
+
+        @include('payments.list_table', ['payments' => $payments, 'showPagination' => false])
 </x-app-layout>
+

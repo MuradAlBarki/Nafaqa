@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PaymentStatusEnum;
 use App\StatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -16,9 +17,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('divorce_case_id')->constrained()->onDelete('cascade');
             $table->decimal('amount', 10, 2);
-            $table->date('payment_date');
-            $table->string('proof_document_url');
-            $table->tinyInteger('status')->default(StatusEnum::Pending->value);
+            $table->date('payment_for_date');
+            $table->date('payment_date')->nullable();
+            $table->string('proof_document_url')->nullable();
+            $table->tinyInteger('status')->default(PaymentStatusEnum::Entry->value);
             $table->timestamps();
         });
     }

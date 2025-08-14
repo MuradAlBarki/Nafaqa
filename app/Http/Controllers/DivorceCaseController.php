@@ -25,6 +25,14 @@ class DivorceCaseController extends Controller
         return view('divorce-cases.index', compact('divorceCases'));
     }
 
+        public function userIndex()
+    {
+        $divorceCases = DivorceCase::where('father_id', auth()->user()->profileRole->id)
+                   ->orWhere('mother_id', auth()->user()->profileRole->id)->paginate(10);
+
+        return view('divorce-cases.user-index', compact('divorceCases'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -54,7 +62,7 @@ class DivorceCaseController extends Controller
         ]);
 
         if ($request->hasFile('court_document')) {
-            $validated['court_document'] = $request->file('court_document')->store('court_documents', 'public');
+            $validated['court_document_url'] = $request->file('court_document')->store('court_documents', 'public');
         }
 
         DivorceCase::create($validated);

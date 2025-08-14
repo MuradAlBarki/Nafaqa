@@ -37,8 +37,9 @@ class ObligationController extends Controller
     public function show(DivorceCase $divorceCase, Obligation $obligation)
     {
         $this->authorize('view', $obligation);
+        $payments = $divorceCase->payments()->paginate(10);
 
-        return view('obligations.show', compact('divorceCase', 'obligation'));
+        return view('obligations.show', compact('divorceCase', 'obligation', 'payments'));
     }
 
     public function edit(DivorceCase $divorceCase, Obligation $obligation)
