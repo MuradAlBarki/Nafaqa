@@ -47,7 +47,7 @@ class ChildController extends Controller
         $divorceCase->save();
         return redirect()
             ->route('divorce-cases.children.index', $divorceCase)
-            ->with('success', 'Child added successfully.');
+            ->with('success', __('added successfully.'));
     }
 
     public function show(DivorceCase $divorceCase, Child $child)
@@ -85,7 +85,7 @@ class ChildController extends Controller
 
         return redirect()
             ->route('divorce-cases.children.index', $divorceCase)
-            ->with('success', 'Child updated successfully.');
+            ->with('success', __('updated successfully.'));
     }
 
     public function destroy(DivorceCase $divorceCase, Child $child)
@@ -96,7 +96,7 @@ class ChildController extends Controller
 
         return redirect()
             ->route('divorce-cases.children.index', $divorceCase)
-            ->with('success', 'Child deleted successfully.');
+            ->with('success', __('deleted successfully.'));
     }
 
     private function extractGender(string $nationalityNo): int

@@ -38,5 +38,15 @@ class DivorceCase extends Model
     {
         return $this->belongsTo(ProfileRole::class, 'father_id');
     }
+
+     public function obligation()
+    {
+        return $this->hasOne(Obligation::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }
 

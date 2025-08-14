@@ -84,6 +84,36 @@
 </a>
 @endcan
 
+@if ($divorceCase->obligation)
+    @can('view', $divorceCase->obligation)
+        <a href="{{ route('divorce-cases.obligations.show', ['divorce_case' => $divorceCase->id, 'obligation' => $divorceCase->obligation->id]) }}"
+           title="Show Obligation"
+           class="text-green-600 hover:text-green-800 mr-2">
+            <!-- Solid banknote / cash stack -->
+<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3 1a1 1 0 100 2h6a1 1 0 100-2H5zm0 4a1 1 0 100 2h6a1 1 0 100-2H5z"/>
+</svg>
+        </a>
+    @endcan
+@else
+    @can('create', \App\Models\Obligation::class)
+        <a href="{{ route('divorce-cases.obligations.create', ['divorce_case' => $divorceCase->id]) }}"
+           title="Create Obligation"
+           class="text-gray-600 hover:text-blue-600 mr-2">
+            <!-- Outline banknote / cash stack -->
+<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3 1a1 1 0 100 2h6a1 1 0 100-2H5zm0 4a1 1 0 100 2h6a1 1 0 100-2H5z"/>
+</svg>
+        </a>
+    @endcan
+@endif
+
+
+
+
+
+
+
                                     @can('delete', $divorceCase)
                                     <!-- Delete -->
                                     <form method="POST" action="{{ route('divorce-cases.destroy', $divorceCase) }}" class="delete-form">

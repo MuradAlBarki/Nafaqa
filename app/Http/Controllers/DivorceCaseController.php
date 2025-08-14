@@ -59,7 +59,7 @@ class DivorceCaseController extends Controller
 
         DivorceCase::create($validated);
 
-        return redirect()->route('divorce-cases.index')->with('success', 'Created successfully.');
+        return redirect()->route('divorce-cases.index')->with('success', __('Created successfully.'));
     }
 
     /**
@@ -107,7 +107,7 @@ class DivorceCaseController extends Controller
 
         $divorceCase->update($validated);
 
-        return redirect()->route('divorce-cases.index')->with('success', 'Updated successfully.');
+        return redirect()->route('divorce-cases.index')->with('success', __('Updated successfully.'));
     }
 
     public function destroy(DivorceCase $divorceCase)
@@ -116,6 +116,6 @@ class DivorceCaseController extends Controller
 
         $divorceCase->delete();
 
-        return redirect()->route('divorce-cases.index')->with('success', 'Deleted successfully.');
+        return redirect()->route('divorce-cases.index')->with('success', __('Deleted successfully.'));
     }
 }

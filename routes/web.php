@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ChildController;
 use App\Http\Controllers\DivorceCaseController;
+use App\Http\Controllers\ObligationController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfileRoleController;
 use App\Http\Controllers\UserController;
@@ -13,7 +15,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -35,6 +37,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('divorce-cases', DivorceCaseController::class);
 
     Route::resource('divorce-cases.children', ChildController::class);
+    Route::resource('divorce-cases.obligations', ObligationController::class)->except('index');
+    Route::resource('divorce-cases.payments', PaymentController::class);
+
     
 });
 
