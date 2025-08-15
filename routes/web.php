@@ -40,6 +40,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('divorce-cases.children', ChildController::class);
     Route::resource('divorce-cases.obligations', ObligationController::class)->except('index');
     Route::resource('divorce-cases.payments', PaymentController::class);
+    Route::patch('/divorce-cases/{divorceCase}/payments/{payment}/pay', [PaymentController::class, 'pay'])->name('payments.pay');
+    Route::patch('payments/{payment}/review', [PaymentController::class, 'review'])->name('payments.review');
 
     
 });

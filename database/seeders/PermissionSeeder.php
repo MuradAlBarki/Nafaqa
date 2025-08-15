@@ -46,7 +46,7 @@ class PermissionSeeder extends Seeder
             $admin->assignRole($adminRole);
         }
 
-        $user1 = User::firstOrCreate(
+        User::firstOrCreate(
             ['phone' => '0954440744'],
             [
                 'name' => 'محمد الخبولي',
@@ -54,7 +54,7 @@ class PermissionSeeder extends Seeder
                 'password' => bcrypt('@password'),
             ]);
 
-        $user1 = User::firstOrCreate(
+        User::firstOrCreate(
             ['phone' => '0943383941'],
             [
                 'name' => 'الاء حسين',

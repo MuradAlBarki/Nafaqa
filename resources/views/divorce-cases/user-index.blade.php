@@ -51,7 +51,7 @@
                             
 
 
-            <a href="{{ route('payments.index', ['divorceCase' => $divorceCase->id]) }}"
+            <a href="{{ route('divorce-cases.payments.index', $divorceCase) }}"
                title="List Payments"
                class="text-gray-600 hover:text-blue-600 mr-2">
 <svg xmlns="http://www.w3.org/2000/svg" 

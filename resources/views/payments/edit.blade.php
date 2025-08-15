@@ -11,6 +11,25 @@
 
             @include('payments.form')
 
+            @can('update', $payment)
+            {{-- Status select --}}
+            <div class="mt-6">
+                <label for="status" class="block text-sm font-medium text-gray-700">
+                    {{ __('Status') }}
+                </label>
+                <select id="status" name="status"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                   @foreach($status as $case)
+    <option value="{{ $case->value }}" {{ old('status', $payment->status) == $case->value ? 'selected' : '' }}>
+        {{ __($case->label()) }}
+
+    </option>
+@endforeach
+                </select>
+            </div>
+            @endcan
+
+
             <div class="mt-8 flex justify-center space-x-8">
                 <button
                     type="submit"

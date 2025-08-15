@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\PaymentStatusEnum;
+use App\PaymentStatusEnum;
 use App\Models\DivorceCase;
 use App\Models\Payment;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
 class PaymentController extends Controller
@@ -30,6 +31,13 @@ class PaymentController extends Controller
         return view('payments.create', compact('divorceCase'));
     }
 
+       public function show(DivorceCase $divorceCase, Payment $payment)
+    {
+        $this->authorize('show', [$payment, $divorceCase]);
+
+        return view('payments.show', compact('divorceCase', 'payment'));
+    }
+
     /**
      * Store a new payment for the divorce case.
      */
@@ -40,10 +48,21 @@ class PaymentController extends Controller
             'payment_for_date' => 'required|date',
         ]);
 
+        $exists = $divorceCase->payments()
+        ->whereDate('payment_for_date', $validated['payment_for_date'])
+        ->where('status', PaymentStatusEnum::Entry->value)
+        ->exists();
+
+        if ($exists) {
+            return redirect()
+                ->route('divorce-cases.obligations.show', [$divorceCase, $divorceCase->obligation])
+                ->withErrors([ __('A pending payment already exists for this date.')]);
+        }
+
         $divorceCase->payments()->create($validated);
 
         return redirect()
-            ->route('obligations.show', [$divorceCase, $divorceCase->obligation])
+            ->route('divorce-cases.obligations.show', [$divorceCase, $divorceCase->obligation])
             ->with('success', __('Payment added successfully.'));
     }
 
@@ -51,7 +70,8 @@ class PaymentController extends Controller
     {
         $this->authorize('update', $payment);
 
-        return view('payments.edit', compact('divorceCase', 'payment'));
+        $status = PaymentStatusEnum::cases();
+        return view('payments.edit', compact('divorceCase', 'payment', 'status'));
     }
 
     /**
@@ -62,16 +82,43 @@ class PaymentController extends Controller
         $this->authorize('update', $payment);
 
         $validated = $request->validate([
-            'amount' => 'required|numeric|min:0',
-            'payment_for_date' => 'required|date',
-        ]);
+        'amount' => 'required|numeric|min:0',
+        'payment_for_date' => 'required|date',
+        'status' => ['required', new Enum(PaymentStatusEnum::class)],
+    ]);
 
         $payment->update($validated);
 
         return redirect()
-            ->route('payments.index', $divorceCase)
+            ->route('divorce-cases.obligations.show', [$divorceCase, $divorceCase->obligation])
             ->with('success', __('Payment updated successfully.'));
     }
+
+
+    public function review(Request $request, Payment $payment)
+    {
+    $this->authorize('changeStatus', $payment);
+
+    $request->validate([
+        'status' => ['required', new Enum(PaymentStatusEnum::class)],
+    ]);
+
+    $payment->status = $request->status;
+    $payment->save();
+
+    $divorceCase = $payment->divorceCase;
+
+    if ($divorceCase->isMother(auth()->user())) {
+        return redirect()
+            ->route('divorce-cases.payments.index', $divorceCase)
+            ->with('success', __('Payment updated successfully.'));
+    }
+
+    return redirect()
+        ->route('divorce-cases.obligations.show', [$divorceCase, $divorceCase->obligation])
+        ->with('success', __('Payment updated successfully.'));
+    }
+
 
     /**
      * Mark a payment as paid with proof document.
@@ -101,25 +148,7 @@ class PaymentController extends Controller
         $payment->update($validated);
 
         return redirect()
-            ->route('payments.index', $divorceCase)
+               ->route('divorce-cases.obligations.show', [$divorceCase, $divorceCase->obligation])
             ->with('success', __('Payment marked as paid.'));
-    }
-
-    /**
-     * Toggle payment status manually (admin or system use).
-     */
-    public function toggleStatus(Request $request, Payment $payment)
-    {
-
-        $request->validate([
-            'status' => ['required', new Enum(PaymentStatusEnum::class)],
-        ]);
-
-        $payment->status = $request->status;
-        $payment->save();
-
-        return redirect()
-            ->route('payments.index', $payment->divorceCase)
-            ->with('success', __('Payment status updated successfully.'));
     }
 }

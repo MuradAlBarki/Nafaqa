@@ -1,17 +1,26 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-bold text-2xl text-gray-800 leading-tight">
-                {{ __('Children') }}
-            </h2>
+<x-slot name="header">
+    <div class="flex justify-between items-center">
+        <h2 class="font-bold text-2xl text-gray-800 leading-tight">
+            {{ __('Children') }}
+        </h2>
+
+        <div class="flex space-x-2 gap-3">
             @can('create', \App\Models\Child::class)
-            <a href="{{ route('divorce-cases.children.create', $divorceCase) }}"
-            class="inline-block px-4 py-2 bg-indigo-100 text-indigo-700 rounded shadow hover:bg-indigo-200 hover:text-indigo-900 transition">
-   + {{ __('Add') }}
-</a>
+                <a href="{{ route('divorce-cases.children.create', $divorceCase) }}"
+                   class="inline-block px-4 py-2 bg-indigo-100 text-indigo-700 rounded shadow hover:bg-indigo-200 hover:text-indigo-900 transition">
+                    + {{ __('Add') }}
+                </a>
             @endcan
+
+            <a href="{{ url()->previous() }}"
+               class="inline-block px-4 py-2 bg-gray-100 text-gray-700 rounded shadow hover:bg-gray-200 hover:text-gray-900 transition">
+                {{ __('Back') }}
+            </a>
         </div>
-    </x-slot>
+    </div>
+</x-slot>
+
 
     <div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @if(session('success'))

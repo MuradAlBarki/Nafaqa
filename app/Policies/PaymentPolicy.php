@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Enums\PaymentStatusEnum;
+use App\PaymentStatusEnum;
 use App\Models\Payment;
 use App\Models\User;
 use App\StatusEnum;
@@ -23,6 +23,12 @@ class PaymentPolicy
         return $user->can('payments.create');
     }
 
+    public function show(User $user, Payment $payment): bool
+    {
+        return $user->can('payments.show') || $payment->divorceCase->father->user_id === $user->id || $payment->divorceCase->mother->user_id === $user->id;
+    }
+
+
     /**
      * Determine whether the user can update the model.
      */
@@ -33,11 +39,10 @@ class PaymentPolicy
 
     public function pay(User $user, Payment $payment): bool
     {
-        return $payment->status == PaymentStatusEnum::Entry;
+        return $payment->status == PaymentStatusEnum::Entry && $payment->divorceCase->father->user_id === $user->id;
     }
-
-     public function changeStatus(User $user, User $model): bool
+    public function changeStatus(User $user, Payment $payment): bool
     {
-        return $user->can('payments.changeStatus');
+        return $user->can('payments.changeStatus') || ( $payment->status == PaymentStatusEnum::PaidNotVerified && $payment->divorceCase->mother->user_id === $user->id);
     }
 }

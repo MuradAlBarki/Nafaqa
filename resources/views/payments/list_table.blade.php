@@ -3,6 +3,7 @@
         <thead class="bg-gray-100 text-gray-600 uppercase text-xs tracking-wider">
             <tr>
                 <th class="px-6 py-3">{{ __('Amount') }}</th>
+                <th class="px-6 py-3">{{ __('Payment Month') }}</th>
                 <th class="px-6 py-3">{{ __('Payment Date') }}</th>
                 <th class="px-6 py-3">{{ __('Status') }}</th>
                 <th class="px-6 py-3">{{ __('Actions') }}</th>
@@ -16,7 +17,10 @@
                         ${{ number_format($payment->amount, 2) }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        {{ $payment->payment_date ? $payment->payment_date->format('Y-m-d') : '-' }}
+                        {{ $payment->payment_for_date->format('Y-m')  }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {{ $payment->payment_date ? $payment->payment_date->format('Y-m-d') : __('not yet') }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <span class="inline-block w-3 h-3 rounded-full mr-2 bg-{{ $statusEnum->realColor() }}-500"></span>
@@ -24,22 +28,33 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex space-x-3 items-center">
-                            @can('view', $payment)
-                                <a href="{{ route('payments.show', $payment->id) }}"
-                                   title="{{ __('View Payment') }}"
-                                   class="text-gray-600 hover:text-blue-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                         viewBox="0 0 24 24" stroke-width="1.5"
-                                         stroke="currentColor" class="h-6 w-6">
-                                        <rect x="2.25" y="6" width="19.5" height="12" rx="2.25" ry="2.25"
-                                              stroke-linecap="round" stroke-linejoin="round"/>
-                                        <circle cx="12" cy="12" r="3"
-                                                stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                              d="M2.25 9h19.5M2.25 15h19.5"/>
-                                    </svg>
-                                </a>
-                            @endcan
+                           
+
+            <a href="{{ route('divorce-cases.payments.show', [$divorceCase->id, $payment->id]) }}"
+               title="{{ __('Show Payment') }}"
+               class="text-gray-600 hover:text-blue-600 mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round"
+          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    <path stroke-linecap="round" stroke-linejoin="round"
+          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+</svg>
+            </a>
+    
+        {{-- Edit --}}
+        @can('update', $payment)
+            <a href="{{ route('divorce-cases.payments.edit', [$divorceCase->id, $payment->id]) }}"
+               title="{{ __('Edit Payment') }}"
+               class="text-gray-600 hover:text-green-600">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                     viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="h-6 w-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M16.862 4.487l1.687 1.687m-2.9-2.9l-8.31 8.31a2.121 2.121 0 00-.53.95l-.47 2.353a.53.53 0 00.63.63l2.353-.47c.356-.07.684-.233.95-.53l8.31-8.31m-2.9-2.9l2.9 2.9"/>
+                </svg>
+            </a>
+        @endcan
                         </div>
                     </td>
                 </tr>

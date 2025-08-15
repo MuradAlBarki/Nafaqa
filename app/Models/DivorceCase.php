@@ -48,5 +48,15 @@ class DivorceCase extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+        public function isFather($user): bool
+    {
+        return $this->father?->user_id === $user->id;
+    }
+
+    public function isMother($user): bool
+    {
+        return $this->mother?->user_id === $user->id;
+    }
 }
 
