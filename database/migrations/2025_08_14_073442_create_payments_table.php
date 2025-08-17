@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('divorce_case_id')->constrained()->onDelete('cascade');
             $table->decimal('amount', 10, 2);
-            $table->date('payment_for_date');
+            $table->date('due_date');
             $table->date('payment_date')->nullable();
             $table->string('proof_document_url')->nullable();
             $table->tinyInteger('status')->default(PaymentStatusEnum::Entry->value);

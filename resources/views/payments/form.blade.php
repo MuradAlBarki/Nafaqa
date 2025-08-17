@@ -17,12 +17,12 @@
     </div>
 
     <div>
-        <label for="payment_for_date" class="block text-sm font-medium text-gray-700" >{{ __('Start Date') }}</label>
+        <label for="due_date" class="block text-sm font-medium text-gray-700" >{{ __('Start Date') }}</label>
         <input
             type="date"
-            name="payment_for_date"
-            id="payment_for_date"
-            value="{{ old('payment_for_date', isset($payment->payment_for_date) ? $payment->payment_for_date->format('Y-m-d') : today()->format('Y-m-d')) }}"
+            name="due_date"
+            id="due_date"
+            value="{{ old('due_date', isset($payment->due_date) ? $payment->due_date->format('Y-m-d') : today()->format('Y-m-d')) }}"
             required
             max="{{ date('Y-m-d') }}"
             oninvalid="this.setCustomValidity('{{ __('Start Date is required and cannot be in the future') }}')"

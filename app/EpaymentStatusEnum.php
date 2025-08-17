@@ -2,12 +2,20 @@
 
 namespace App;
 
-enum EpaymentStatusEnum: string
+enum EpaymentStatusEnum: int
 {
-    case Success = 'success';
-    case Failed  = 'failed';
-    case Pending = 'pending';
+    case Pending = 0;
+    case Success = 1;
+    case Failed = 2;
 
+   public function label(): string
+    {
+        return match($this) {
+            self::Pending => 'Pending',
+            self::Success => 'Success',
+            self::Failed => 'Failed',
+        };
+    }
 
      public function realColor(): string
     {

@@ -26,7 +26,7 @@
                     <div class="flex flex-col">
                         <label class="text-sm font-medium mb-1 bg-white px-1">{{ __('Payment Month') }}</label>
                         <input type="text"
-                               value="{{ $payment->payment_for_date?->format('Y-m') }}"
+                               value="{{ $payment->due_date?->format('Y-m') }}"
                                disabled
                                class="mt-1 block w-full rounded-lg border border-gray-300 bg-gray-100 px-3 py-2 shadow-sm cursor-not-allowed"/>
                     </div>
@@ -92,7 +92,7 @@
                 <div class="flex flex-col">
                     <label class="text-sm font-medium mb-1 bg-white px-1">{{ __('Payment Month') }}</label>
                     <input type="text"
-                           value="{{ $payment->payment_for_date?->format('Y-m') }}"
+                           value="{{ $payment->due_date?->format('Y-m') }}"
                            disabled
                            class="mt-1 block w-full rounded-lg border border-gray-300 bg-gray-100 px-3 py-2 shadow-sm cursor-not-allowed"/>
                 </div>

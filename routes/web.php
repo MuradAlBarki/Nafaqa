@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\ChildController;
 use App\Http\Controllers\DivorceCaseController;
 use App\Http\Controllers\EpaymentController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ObligationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
@@ -49,6 +51,23 @@ Route::middleware('auth')->group(function () {
 
     Route::get('payments/{payment}/epayments', [EpaymentController::class, 'index'])->name('epayments.index');
     Route::get('payments/{payment}/epayments/{epayment}', [EpaymentController::class, 'show'])->name('epayments.show');
+
+    Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])
+    ->name('notifications.read');
+
+    Route::get('/logs', [ActivityLogController::class, 'index'])
+    ->name('logs.index')
+    ->middleware('can:viewAny.Logs');
+
+    Route::get('/profile-roles/export', [ProfileRoleController::class, 'export'])
+    ->name('profile-roles.export')
+    ->middleware('can:export,App\Models\ProfileRole');
+
+    Route::get('/payments/export-late', [PaymentController::class, 'exportLatePayments'])
+    ->name('payments.export-late')
+    ->middleware('can:exportLatePayments,App\Models\Payment');
+
+
 
     
 });

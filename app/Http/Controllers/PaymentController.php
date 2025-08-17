@@ -7,6 +7,7 @@ use App\PaymentStatusEnum;
 use App\Models\DivorceCase;
 use App\Models\Epayment;
 use App\Models\Payment;
+use App\Notifications\UserAlertNotification;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -47,11 +48,11 @@ class PaymentController extends Controller
     {
         $validated = $request->validate([
             'amount' => 'required|numeric|min:0',
-            'payment_for_date' => 'required|date',
+            'due_date' => 'required|date',
         ]);
 
         $exists = $divorceCase->payments()
-        ->whereDate('payment_for_date', $validated['payment_for_date'])
+        ->whereDate('due_date', $validated['due_date'])
         ->where('status', PaymentStatusEnum::Entry->value)
         ->exists();
 
@@ -92,7 +93,7 @@ class PaymentController extends Controller
 
         $validated = $request->validate([
         'amount' => 'required|numeric|min:0',
-        'payment_for_date' => 'required|date',
+        'due_date' => 'required|date',
         'status' => ['required', new Enum(PaymentStatusEnum::class)],
     ]);
 
@@ -174,6 +175,14 @@ class PaymentController extends Controller
 
         $payment->status = PaymentStatusEnum::PaidNotVerified;
         $payment->save();
+
+        auth()->user()->notify(new UserAlertNotification(
+        'Payment Successful',
+        "Your payment #{$payment->id} was successful.",
+        'payment',
+        route('payments.show', $payment)
+));
+
 
     }
 

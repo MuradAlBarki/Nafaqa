@@ -69,4 +69,9 @@ class ProfileRolePolicy
     {
         return $user->can('profileRoles.changeStatus');
     }
+
+    public function export(User $user)
+    {
+        return $user->can('download.reports');
+    }
 }

@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\DocumentTypeEnum;
+use App\Exports\ProfileRolesExport;
 use App\Http\Requests\StoreProfileRoleRequest;
 use App\Http\Requests\UpdateProfileRoleRequest;
 use App\Models\ProfileRole;
 use App\Models\Country;
 use App\Models\User;
+use App\Notifications\UserAlertNotification;
 use App\StatusEnum;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProfileRoleController extends Controller
 {
@@ -58,6 +61,14 @@ class ProfileRoleController extends Controller
             ->causedBy(auth()->user())
             ->performedOn($profileRole)
             ->log('Created');
+
+        auth()->user()->notify(new UserAlertNotification(
+        'Profile Created',
+        'Your profile has been created successfully!',
+        'profile',
+        route('profile-roles.show', $profileRole)
+));
+
 
         return redirect()->route('dashboard')->with('success', __('Profile created successfully.'));
     }
@@ -144,5 +155,10 @@ class ProfileRoleController extends Controller
         return redirect()->route('profile-roles.index')->with('success', __('Profile deleted successfully.'));
     }
 
-    
+    public function export()
+{
+    $this->authorize('export', ProfileRole::class);
+
+    return Excel::download(new ProfileRolesExport, 'profile_roles.xlsx');
+}
 }

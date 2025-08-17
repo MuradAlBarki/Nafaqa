@@ -45,4 +45,9 @@ class PaymentPolicy
     {
         return $user->can('payments.changeStatus') || ( $payment->status == PaymentStatusEnum::PaidNotVerified && $payment->divorceCase->mother->user_id === $user->id);
     }
+
+    public function exportLatePayments(User $user)
+    {
+        return $user->can('download.reports');
+    }
 }

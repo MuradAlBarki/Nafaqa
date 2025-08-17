@@ -12,12 +12,12 @@ class Payment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['divorce_case_id','obligation_id','amount','payment_date', 'payment_for_date', 'proof_document_url','status'];
+    protected $fillable = ['divorce_case_id','obligation_id','amount','payment_date', 'due_date', 'proof_document_url','status'];
 
     protected $casts = [
         'status' => PaymentStatusEnum::class,
         'payment_date' => 'date',
-        'payment_for_date' => 'date',
+        'due_date' => 'date',
     ];
 
     public function divorceCase()

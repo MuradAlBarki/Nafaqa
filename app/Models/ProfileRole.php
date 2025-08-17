@@ -38,6 +38,16 @@ class ProfileRole extends Model
     return \Spatie\Activitylog\LogOptions::defaults()->logOnlyDirty()->dontSubmitEmptyLogs();
 }
 
+    protected static $logName = 'profile_role';
+
+    protected static $logAttributes = ['*']; // Track all attributes
+    protected static $logOnlyDirty = true;   // Only log changed attributes
+
+    public function getDescriptionForEvent(string $eventName): string
+    {
+        return "{$eventName} on ProfileRole #{$this->id}";
+    }
+
     protected $casts = [
         'status' => StatusEnum::class,
         'gender' => GenderEnum::class,
@@ -91,6 +101,5 @@ class ProfileRole extends Model
     {
         return $this->casesAsMother()->exists();
     }
-
 
     }

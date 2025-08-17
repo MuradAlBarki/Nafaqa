@@ -12,7 +12,7 @@ class PaymentFactory extends Factory
         return [
             'divorce_case_id' => DivorceCase::factory(),
             'monthly_amount' => $this->faker->randomFloat(2, 200, 1000),
-            'payment_for_date' => $this->faker->date(),
+            'due_date' => $this->faker->date(),
             'payment_date' => $this->faker->date(),
             'proof_document_url' => $this->faker->url(),
             'status' =>  $this->faker->randomElement(StatusEnum::cases()),

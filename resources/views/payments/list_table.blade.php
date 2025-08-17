@@ -17,7 +17,7 @@
                         ${{ number_format($payment->amount, 2) }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        {{ $payment->payment_for_date->format('Y-m')  }}
+                        {{ $payment->due_date->format('Y-m')  }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         {{ $payment->payment_date ? $payment->payment_date->format('Y-m-d') : __('not yet') }}
