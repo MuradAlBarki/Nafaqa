@@ -15,7 +15,7 @@ class DivorceCaseFactory extends Factory
             'father_id' => ProfileRole::factory(),
             'case_no' => $this->faker->unique()->numerify('CASE-####'),
             'divorce_date' => $this->faker->date(),
-            'court_document' => $this->faker->word.'.pdf',
+            'court_document_url' => $this->faker->word.'.pdf',
             'status' => $this->faker->randomElement(StatusEnum::cases()),
         ];
     }

@@ -81,15 +81,16 @@ class ProfileRole extends Model
     {
         return $this->hasMany(DivorceCase::class, 'mother_id');
     }
-
-    public function isFather(): bool
+    
+    public function getIsFatherAttribute(): bool
     {
         return $this->casesAsFather()->exists();
     }
 
-    public function isMother(): bool
+    public function getIsMotherAttribute(): bool
     {
         return $this->casesAsMother()->exists();
     }
+
 
     }

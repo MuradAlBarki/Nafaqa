@@ -28,7 +28,7 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex space-x-3 items-center">
-                           
+                <div class="flex items-center space-x-2 gap-2">         
 
             <a href="{{ route('divorce-cases.payments.show', [$divorceCase->id, $payment->id]) }}"
                title="{{ __('Show Payment') }}"
@@ -55,6 +55,37 @@
                 </svg>
             </a>
         @endcan
+
+        @if($payment->status === \App\PaymentStatusEnum::Entry && $divorceCase->isFather(auth()->user()))
+        <a href="{{ route('payments.epay', $payment) }}"
+               title="{{ __('Epay Payment') }}"
+               class="text-gray-600 hover:text-green-600">
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
+                <rect x="2" y="5" width="20" height="14" rx="2" ry="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="2" y1="10" x2="22" y2="10" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="6" cy="15" r="1" fill="currentColor"/>
+                <circle cx="10" cy="15" r="1" fill="currentColor"/>
+                <circle cx="14" cy="15" r="1" fill="currentColor"/>
+</svg>
+
+            </a>
+        @endif
+
+        <!-- Epayments Button (show only if payment has epayments) -->
+         @can('viewAny', [\App\Models\Epayment::class, $payment])
+@if($payment->epayments()->exists())
+    <a href="{{ route('epayments.index', $payment) }}"
+       title="{{ __('View Epayments') }}"
+       class="text-gray-600 hover:text-purple-600">
+        <!-- SVG for Epayments -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 8v4l3 3m6 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+    </a>
+@endif
+@endcan
                         </div>
                     </td>
                 </tr>

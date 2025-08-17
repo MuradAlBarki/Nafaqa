@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChildController;
 use App\Http\Controllers\DivorceCaseController;
+use App\Http\Controllers\EpaymentController;
 use App\Http\Controllers\ObligationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
@@ -42,6 +43,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('divorce-cases.payments', PaymentController::class);
     Route::patch('/divorce-cases/{divorceCase}/payments/{payment}/pay', [PaymentController::class, 'pay'])->name('payments.pay');
     Route::patch('payments/{payment}/review', [PaymentController::class, 'review'])->name('payments.review');
+    Route::get('payments/{payment}/epay', [PaymentController::class, 'listEpay'])->name('payments.epay');
+    Route::post('payments/{payment}/success', [PaymentController::class, 'success'])->name('payments.success');
+    Route::post('payments/{payment}/fail', [PaymentController::class, 'fail'])->name('payments.fail');
+
+    Route::get('payments/{payment}/epayments', [EpaymentController::class, 'index'])->name('epayments.index');
+    Route::get('payments/{payment}/epayments/{epayment}', [EpaymentController::class, 'show'])->name('epayments.show');
 
     
 });

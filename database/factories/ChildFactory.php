@@ -16,6 +16,7 @@ class ChildFactory extends Factory
             'first_name' => $this->faker->firstName,
             'nationality_no' => $this->faker->unique()->regexify('/[12][0-9]{11}/'),
             'date_of_birth' => $this->faker->date(),
+            'birth_certificate_url' => $this->faker->url(),
             'gender' => $this->faker->randomElement(GenderEnum::cases()),
             'status' => $this->faker->randomElement(StatusEnum::cases()),
         ];

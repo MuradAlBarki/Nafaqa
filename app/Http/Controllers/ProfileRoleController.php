@@ -48,7 +48,7 @@ class ProfileRoleController extends Controller
         }
 
         $validated = $request->validated();
-        $validated['gender'] = $request->input('gender');
+        $validated['gender'] = $validated['national_no']?$request->input('gender'):$validated['gender'];
         $validated['document_file_url'] = $request->file('document_file')->store('documents', 'public');
         $validated['user_id'] = $targetUser->id;
 
@@ -85,7 +85,7 @@ class ProfileRoleController extends Controller
         $this->authorize('update', $profileRole);
 
         $validated = $request->validated();
-        $validated['gender'] = $request->input('gender');
+        $validated['gender'] = $validated['national_no']?$request->input('gender'):$validated['gender'];
 
         if($request->file('document_file')){
             $validated['document_file_url'] = $request->file('document_file')->store('documents', 'public');
@@ -98,7 +98,7 @@ class ProfileRoleController extends Controller
             ->performedOn($profileRole)
             ->log('Updated');
 
-        return redirect()->route('dashboard')>with('success', __('Profile updated successfully.'));
+        return redirect()->route('dashboard')->with('success', __('Profile updated successfully.'));
      
     }
 

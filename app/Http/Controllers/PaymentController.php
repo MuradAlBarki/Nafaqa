@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\EpaymentStatusEnum;
 use App\PaymentStatusEnum;
 use App\Models\DivorceCase;
+use App\Models\Epayment;
 use App\Models\Payment;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -74,6 +76,13 @@ class PaymentController extends Controller
         return view('payments.edit', compact('divorceCase', 'payment', 'status'));
     }
 
+      public function listEpay(DivorceCase $divorceCase, Payment $payment)
+    {
+        $this->authorize('pay', $payment);
+
+        return view('payments.epay', compact('payment'));
+    }
+
     /**
      * Update an existing payment.
      */
@@ -93,6 +102,8 @@ class PaymentController extends Controller
             ->route('divorce-cases.obligations.show', [$divorceCase, $divorceCase->obligation])
             ->with('success', __('Payment updated successfully.'));
     }
+
+    
 
 
     public function review(Request $request, Payment $payment)
@@ -150,5 +161,29 @@ class PaymentController extends Controller
         return redirect()
                ->route('divorce-cases.obligations.show', [$divorceCase, $divorceCase->obligation])
             ->with('success', __('Payment marked as paid.'));
+    }
+
+    public function success(Request $request, Payment $payment)
+    {
+        Epayment::create([
+            'payment_id' => $payment->id,
+            'status' => EpaymentStatusEnum::Success->value,
+            'gateway' => $request->input('gateway'),
+            'response_json' => $request->input('response')
+        ]);
+
+        $payment->status = PaymentStatusEnum::PaidNotVerified;
+        $payment->save();
+
+    }
+
+    public function fail(Request $request, Payment $payment)
+    {
+        Epayment::create([
+            'payment_id' => $payment->id,
+            'status' => EpaymentStatusEnum::Failed->value,
+            'gateway' => $request->input('gateway'),
+            'response_json' => $request->input('response')
+        ]);
     }
 }

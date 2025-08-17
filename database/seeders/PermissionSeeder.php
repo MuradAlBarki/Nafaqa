@@ -16,7 +16,7 @@ class PermissionSeeder extends Seeder
         $permissions = ['viewAny', 'view', 'create', 'update', 'changeStatus', 'delete'];
         $features = ['users', 'profileRoles', 'divorceCases', 'children', 'obligations', 'payments'];
 
-        $allPermissionNames = [];
+        $allPermissionNames = ['viewAny.epayments', 'view.epayments', 'download.reports'];
 
         foreach ($features as $feature) {
             foreach ($permissions as $action) {

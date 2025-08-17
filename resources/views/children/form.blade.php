@@ -27,7 +27,6 @@
             id="nationality_no"
             value="{{ old('nationality_no', $child->nationality_no ?? '') }}"
             placeholder="{{ __('xxxxxxxxxxxx') }}"
-            required
             minlength="12"
             maxlength="12"
             pattern="^[12][0-9]{11}$"
@@ -52,5 +51,48 @@
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
         />
     </div>
+
+</div>
+
+{{-- Second Row: Gender + Birth Certificate --}}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+
+    <div>
+        <label for="gender" class="block text-sm font-medium text-gray-700">{{ __('Gender') }}</label>
+        <select
+            name="gender"
+            id="gender"
+            required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+        >
+            @foreach(\App\GenderEnum::cases() as $gender)
+                <option value="{{ $gender->value }}" {{ old('gender', $child->gender ?? '') == $gender->value ? 'selected' : '' }}>
+                    {{ __($gender->label()) }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div>
+        <label for="birth_certificate" class="block text-sm font-medium text-gray-700">{{ __('Birth Certificate') }}</label>
+        <input
+            type="file"
+            name="birth_certificate"
+            id="birth_certificate"
+            accept=".pdf,.jpg,.jpeg,.png"
+            @if(!isset($child)) required @endif
+            oninvalid="this.setCustomValidity('{{ __('Birth Certificate is required') }}')"
+            oninput="this.setCustomValidity('')"
+            class="block w-full text-sm text-gray-500
+                   file:mr-4 file:py-2 file:px-4
+                   file:rounded-md file:border-0
+                   file:text-sm file:font-semibold
+                   file:bg-indigo-50 file:text-indigo-700
+                   hover:file:bg-indigo-100"
+        />
+    </div>
+
+    {{-- Empty column for alignment --}}
+    <div></div>
 
 </div>

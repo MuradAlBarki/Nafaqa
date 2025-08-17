@@ -7,7 +7,10 @@
 
         <div class="space-y-4 text-gray-700">
             <p><strong>{{ __('Name') }}:</strong> {{ $profileRole->first_name }} {{ $profileRole->mid_name }} {{ $profileRole->last_name }}</p>
+            <p><strong>{{ __('Gender') }}:</strong> {{ __($profileRole->gender->label()) }}</p>
+            @if($profileRole->national_no)
             <p><strong>{{ __('National No') }}:</strong> {{ $profileRole->national_no }}</p>
+            @endif
             <p><strong>{{ __('IBAN') }}:</strong> {{ $profileRole->IBAN }}</p>
             <p>
                 <strong>{{ __('Document') }}:</strong>

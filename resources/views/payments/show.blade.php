@@ -108,6 +108,22 @@
                         </div>
                     </div>
                 @endif
+
+                @if($payment->epaid)
+                    @php $epay = $payment->epayment(); @endphp
+                    <div class="flex flex-col md:col-span-2 p-2 bg-green-50 border-l-4 border-green-400 rounded">
+                        <span class="text-sm font-semibold text-green-700">
+                            {{ __('Paid Electronically') }}
+                        </span>
+                        <span class="text-sm text-gray-700">
+                            {{ __('Gateway') }} : <strong>{{ $epay->gateway }}</strong>
+                        </span>
+                        <span class="text-sm text-gray-700">
+                            {{ __('Reference No') }}ؤ: <strong>{{ $epay->response_json['RRN'] ?? 'N/A' }}</strong>
+                        </span>
+                    </div>
+                @endif
+
             </div>
 
             {{-- Approve/Reject + Back buttons --}}

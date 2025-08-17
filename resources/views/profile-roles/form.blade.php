@@ -50,23 +50,24 @@
     </div>
 
     {{-- Row 3: DOB + Nationality + Document No (3 columns) --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div>
-            <label for="date_of_birth" class="block text-sm font-medium text-gray-700">{{ __('Date of Birth') }}</label>
-            <input
-                type="date"
-                name="date_of_birth"
-                id="date_of_birth"
-                value="{{ old('date_of_birth', $profileRole->date_of_birth ?? '') }}"
-                required
-                max="{{ date('Y-m-d') }}"
-                oninvalid="this.setCustomValidity('{{ __('Date of Birth is required and must be before today') }}')"
-                oninput="this.setCustomValidity('')"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-            />
-        </div>
-        <div>
-            <label for="nationality_id" class="block text-sm font-medium text-gray-700">{{ __('Nationality') }}</label>
+   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+    <div>
+        <label for="date_of_birth" class="block text-sm font-medium text-gray-700">{{ __('Date of Birth') }}</label>
+        <input
+            type="date"
+            name="date_of_birth"
+            id="date_of_birth"
+            value="{{ old('date_of_birth', $profileRole->date_of_birth ?? '') }}"
+            required
+            max="{{ date('Y-m-d') }}"
+            oninvalid="this.setCustomValidity('{{ __('Date of Birth is required and must be before today') }}')"
+            oninput="this.setCustomValidity('')"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+        />
+    </div>
+
+    <div>
+        <label for="nationality_id" class="block text-sm font-medium text-gray-700">{{ __('Nationality') }}</label>
         <select
             id="nationality_id"
             name="nationality_id"
@@ -76,14 +77,16 @@
             oninput="this.setCustomValidity('')"
         >
             @foreach($countries as $country)
-                <option value="{{ $country->id }}" {{ old('nationality_id') == $country->id ? 'selected' : '' }}>
+                <option value="{{ $country->id }}" {{ old('nationality_id', $profileRole->nationality_id ?? '') == $country->id ? 'selected' : '' }}>
                     {{ app()->getLocale() === 'ar' ? $country->arabic_name : $country->english_name }}
                 </option>
             @endforeach
         </select>
+    </div>
 
-        </div>
-        <div>
+    {{-- Conditional National No / Gender --}}
+    <div id="national_or_gender">
+        <div id="libyan_fields">
             <label for="national_no" class="block text-sm font-medium text-gray-700">{{ __('National No') }}</label>
             <input
                 type="text"
@@ -91,20 +94,31 @@
                 id="national_no"
                 value="{{ old('national_no', $profileRole->national_no ?? '') }}"
                 placeholder="{{ __('National No') }}"
-                required
                 pattern="^[1-2][0-9]{11}$"
                 maxlength="12"
                 minlength="12"
-                oninvalid="this.setCustomValidity('{{ __('National No must start with 1 or 2 and be 12 digits') }}')"
-                oninput="this.setCustomValidity('')"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
             />
         </div>
+
+        <div id="non_libyan_fields" class="hidden">
+            <label for="gender" class="block text-sm font-medium text-gray-700">{{ __('Gender') }}</label>
+            <select name="gender" id="gender" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+               @foreach(\App\GenderEnum::cases() as $gender)
+              <option value="{{ $gender->value }}" {{ old('gender', $profileRole->gender ?? '') == $gender->value ? 'selected' : '' }}>
+                    {{ __($gender->label()) }}
+                </option>
+                @endforeach
+            </select>
+        </div>
     </div>
+</div>
+
+
 
     {{-- Row 4: Document Type + Document No + IBAN (3 columns) --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        @php use App\Enums\DocumentTypeEnum; @endphp
+        @php use App\DocumentTypeEnum; @endphp
 
         <div>
             <label for="document_type" class="block text-sm font-medium text-gray-700">{{ __('Document Type') }}</label>
@@ -172,3 +186,24 @@
         hover:file:bg-indigo-100"
 />
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const nationalitySelect = document.getElementById('nationality_id');
+    const libyanFields = document.getElementById('libyan_fields');
+    const nonLibyanFields = document.getElementById('non_libyan_fields');
+
+    function toggleFields() {
+        const selectedValue = nationalitySelect.value;
+        if (selectedValue == '1') { // Libyan
+            libyanFields.classList.remove('hidden');
+            nonLibyanFields.classList.add('hidden');
+        } else { // Non-Libyan
+            libyanFields.classList.add('hidden');
+            nonLibyanFields.classList.remove('hidden');
+        }
+    }
+
+    nationalitySelect.addEventListener('change', toggleFields);
+    toggleFields(); 
+});
+</script>

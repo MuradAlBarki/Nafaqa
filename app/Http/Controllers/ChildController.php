@@ -8,6 +8,7 @@ use App\Models\Child;
 use App\Models\DivorceCase;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ChildController extends Controller
 {
@@ -35,16 +36,20 @@ class ChildController extends Controller
 
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
-            'nationality_no' => ['required', 'digits:12', 'regex:/^[12]/', 'unique:children,nationality_no'],
+            'nationality_no' => ['sometimes', 'digits:12', 'regex:/^[12]/', 'unique:children,nationality_no'],
             'date_of_birth' => 'required|date',
-        ]);
+            'birth_certificate_document' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'gender' => [
+                'required',
+                'integer',
+                Rule::in(array_column(GenderEnum::cases(), 'value'))
+        ]]);
+        $validated['birth_certificate_document_url'] = $request->file('birth_certificate_document')->store('birth_certificate_documents', 'public');
 
-        $validated['gender'] = $this->extractGender($validated['nationality_no']);
-        $validated['case_id'] = $divorceCase->id;
-
-        Child::create($validated);
+        $divorceCase->children()->create($validated);
         $divorceCase->status = StatusEnum::Active->value;
         $divorceCase->save();
+
         return redirect()
             ->route('divorce-cases.children.index', $divorceCase)
             ->with('success', __('added successfully.'));
@@ -71,15 +76,23 @@ class ChildController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
             'nationality_no' => [
-                'required',
+                'sometimes',
                 'digits:12',
                 'regex:/^[12]/',
                 'unique:children,nationality_no,' . $child->id,
             ],
             'date_of_birth' => 'required|date',
-        ]);
+            'birth_certificate_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'gender' => [
+                'required',
+                'integer',
+                Rule::in(array_column(GenderEnum::cases(), 'value'))
+        ]]);
 
-        $validated['gender'] = $this->extractGender($validated['nationality_no']);
+        if($request->file('birth_certificate_document')){
+            $validated['birth_certificate_document_url'] = $request->file('birth_certificate_document')->store('birth_certificate_documents', 'public');
+        }
+
 
         $child->update($validated);
 
@@ -98,17 +111,4 @@ class ChildController extends Controller
             ->route('divorce-cases.children.index', $divorceCase)
             ->with('success', __('deleted successfully.'));
     }
-
-    private function extractGender(string $nationalityNo): int
-{
-    $prefix = $nationalityNo[0];
-
-    foreach (GenderEnum::cases() as $gender) {
-        if ((string) $gender->value === $prefix) {
-            return $gender->value;
-        }
-    }
-
-    throw new \InvalidArgumentException("Unknown gender prefix: {$prefix}");
-}
 }
