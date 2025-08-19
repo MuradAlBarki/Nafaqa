@@ -57,21 +57,32 @@ class ProfileRoleController extends Controller
 
         $profileRole = ProfileRole::create($validated);
 
-        activity()
-            ->causedBy(auth()->user())
-            ->performedOn($profileRole)
-            ->log('Created');
 
-        auth()->user()->notify(new UserAlertNotification(
+        $targetUser->notify(new UserAlertNotification(
         'Profile Created',
         'Your profile has been created successfully!',
         'profile',
         route('profile-roles.show', $profileRole)
-));
+        ));
 
+        if(auth()->user() != $targetUser){
+                auth()->user()->notify(new UserAlertNotification(
+                'Profile Created',
+                'a profile has been created successfully!',
+                'profile',
+                route('profile-roles.show', $profileRole)
+        ));
+        }
 
-        return redirect()->route('dashboard')->with('success', __('Profile created successfully.'));
-    }
+        if (auth()->user()->can('viewAny', \App\Models\User::class)) {
+            return redirect()->route('users.index')
+                            ->with('success', __('Profile created successfully.'));
+        }
+
+        return redirect()->route('dashboard')
+                        ->with('success', __('Profile created successfully.'));
+
+            }
 
     public function show(ProfileRole $profileRole)
     {
@@ -104,12 +115,31 @@ class ProfileRoleController extends Controller
 
         $profileRole->update($validated);
 
-        activity()
-            ->causedBy(auth()->user())
-            ->performedOn($profileRole)
-            ->log('Updated');
 
-        return redirect()->route('dashboard')->with('success', __('Profile updated successfully.'));
+        $profileRole->user->notify(new UserAlertNotification(
+        'Profile Updated',
+        'Your profile has been updated successfully!',
+        'profile',
+        route('profile-roles.show', $profileRole)
+        ));
+
+        if(auth()->user() != $profileRole->user){
+                auth()->user()->notify(new UserAlertNotification(
+                'Profile Updated',
+                'a profile has been updated successfully!',
+                'profile',
+                route('profile-roles.show', $profileRole)
+        ));
+        }
+
+        if (auth()->user()->can('viewAny', \App\Models\ProfileRole::class)) {
+            return redirect()->route('profile-roles.index')
+                            ->with('success', __('Profile updated successfully.'));
+        }
+
+        return redirect()->route('dashboard')
+                        ->with('success', __('Profile updated successfully.'));
+
      
     }
 
@@ -132,6 +162,13 @@ class ProfileRoleController extends Controller
 
     $profileRole->status = StatusEnum::from((int)$statusValue);
     $profileRole->save();
+
+    $profileRole->user->notify(new UserAlertNotification(
+        'Profile Reviewed',
+        'Your profile has been reviewed!',
+        'profile',
+        route('profile-roles.show', $profileRole)
+        ));
 
        activity()
             ->causedBy(auth()->user())
@@ -156,9 +193,9 @@ class ProfileRoleController extends Controller
     }
 
     public function export()
-{
-    $this->authorize('export', ProfileRole::class);
+    {
+        $this->authorize('export', ProfileRole::class);
 
-    return Excel::download(new ProfileRolesExport, 'profile_roles.xlsx');
-}
+        return Excel::download(new ProfileRolesExport, 'profile_roles.xlsx');
+    }
 }

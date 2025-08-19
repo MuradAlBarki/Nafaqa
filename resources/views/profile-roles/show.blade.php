@@ -15,7 +15,7 @@
             <p>
                 <strong>{{ __('Document') }}:</strong>
                 @php
-                    $docTypeLabel = \App\DocumentTypeEnum::tryFrom($profileRole->document_type)?->label() ?? $profileRole->document_type;
+                      $docTypeLabel = $profileRole->document_type?->label() ?? $profileRole->document_type;
                 @endphp
                 {{ __($docTypeLabel) }} - {{ $profileRole->document_no }}
             </p>
@@ -48,12 +48,14 @@
             @endif
         </div>
 <div class="mt-6 flex justify-center gap-2">
+    @can('update', $profileRole)
     <a href="{{ route('profile-roles.edit', $profileRole) }}"
        class="px-6 py-2 text-sm bg-blue-100 text-blue-700 font-medium rounded-md
               hover:bg-blue-200 focus:outline-none focus:ring-1 focus:ring-blue-300
               transition duration-150 ease-in-out">
         {{ __('Edit') }}
     </a>
+    @endcan
     <a href="{{ url()->previous() }}"
        class="px-6 py-2 text-sm bg-gray-100 text-gray-700 font-medium rounded-md
               hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-300

@@ -5,6 +5,7 @@ namespace App\Models;
 use Altwaireb\Countries\Models\Country as Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+
 class Country extends Model
 {
     use HasFactory; 

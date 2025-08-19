@@ -87,6 +87,18 @@
 </form>
 @endcan
 
+@can('viewAny', \Spatie\Activitylog\Models\Activity::class)
+    <a href="{{ route('logs.index', ['model' => App\Models\Child::class, 'id' => $child->id]) }}"
+       title="{{ __('View Logs') }}"
+       class="text-gray-600 hover:text-blue-600 mr-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" 
+                  d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
+        </svg>
+    </a>
+@endcan
+
                                 </div>
                             </td>
                         </tr>

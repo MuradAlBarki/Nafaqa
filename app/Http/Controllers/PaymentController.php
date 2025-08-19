@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\EpaymentStatusEnum;
+use App\Exports\LatePaymentsExport;
 use App\PaymentStatusEnum;
 use App\Models\DivorceCase;
 use App\Models\Epayment;
@@ -12,6 +13,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PaymentController extends Controller
 {
@@ -22,6 +24,8 @@ class PaymentController extends Controller
      */
     public function index(DivorceCase $divorceCase)
     {
+        $this->authorize('viewAny', Payment::class);
+
         $payments = $divorceCase->payments()->paginate(15);
 
         return view('payments.index', compact('divorceCase', 'payments'));
@@ -194,5 +198,13 @@ class PaymentController extends Controller
             'gateway' => $request->input('gateway'),
             'response_json' => $request->input('response')
         ]);
+    }
+
+
+    public function exportLatePayments()
+    {
+    $this->authorize('exportLatePayments', Payment::class);
+
+    return Excel::download(new LatePaymentsExport, 'late_payments.xlsx');
     }
 }
