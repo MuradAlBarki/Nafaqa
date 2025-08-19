@@ -12,7 +12,7 @@
             <p>
                 <strong>{{ __('Document') }}:</strong>
                 @php
-                    $docTypeLabel = \App\DocumentTypeEnum::tryFrom($profileRole->document_type)?->label() ?? $profileRole->document_type;
+                    $docTypeLabel = $profileRole->document_type?->label() ?? $profileRole->document_type;
                 @endphp
                 {{ __($docTypeLabel) }} - {{ $profileRole->document_no }}
             </p>

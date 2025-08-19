@@ -28,16 +28,20 @@
                 {{ session('success') }}
             </div>
         @endif
+               @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+        @endif
 
         <div class="overflow-x-auto bg-white shadow rounded-lg">
             <table class="min-w-full divide-y divide-gray-200 text-sm">
                 <thead class="bg-gray-100 text-gray-600 uppercase text-xs tracking-wider">
                     <tr>
                         <th class="px-6 py-3">{{ __('Name') }}</th>
-                        <th class="px-6 py-3">{{ __('National No') }}</th>
                         <th class="px-6 py-3">{{ __('Gender') }}</th>
                         <th class="px-6 py-3">{{ __('Date of Birth') }}</th>
-                        <!-- <th class="px-6 py-3">{{ __('Status') }}</th> -->
+                        <th class="px-6 py-3">{{ __('Birth Certificate') }}</th>
                         <th class="px-6 py-3">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
@@ -51,18 +55,21 @@
                                 {{ $child->first_name }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                {{ $child->nationality_no }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
                                 {{ __($child->gender->label()) ?? __('Unknown') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 {{ $child->date_of_birth->format('Y-m-d') }}
                             </td>
-                            <!-- <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-block w-3 h-3 rounded-full mr-2 bg-{{ $statusEnum->realColor() }}-500"></span>
-                                {{ __($statusEnum->label()) }}
-                            </td> -->
+              <td class="px-6 py-4 whitespace-nowrap">
+    <a 
+        href="{{ Storage::url($child->birth_certificate_url) }}" 
+        target="_blank" 
+        class="text-indigo-600 hover:underline"
+    >
+        {{ __('View Document') }}
+    </a>
+</td>
+
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex space-x-3 items-center">
                                 @can('update', $child)
@@ -73,7 +80,7 @@
     </svg>
 </a>
 @endcan
-
+&nbsp;&nbsp;&nbsp;
 @can('delete', $child)
 <!-- Delete -->
 <form method="POST" action="{{ route('divorce-cases.children.destroy', [$child->case_id, $child]) }}" class="delete-form">
@@ -85,6 +92,18 @@
         </svg>
     </button>
 </form>
+@endcan
+
+@can('viewAny', \Spatie\Activitylog\Models\Activity::class)
+    <a href="{{ route('logs.index', ['model' => App\Models\Child::class, 'id' => $child->id]) }}"
+       title="{{ __('View Logs') }}"
+       class="text-gray-600 hover:text-blue-600 mr-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" 
+                  d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
+        </svg>
+    </a>
 @endcan
 
                                 </div>

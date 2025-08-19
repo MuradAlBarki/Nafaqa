@@ -4,6 +4,20 @@
     </x-slot>
 
     <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-8 mt-10">
+@can('viewAny', \Spatie\Activitylog\Models\Activity::class)
+    <div class="flex justify-end">
+        <a href="{{ route('logs.index', ['model' => App\Models\Obligation::class, 'id' => $obligation->id]) }}"
+           title="{{ __('View Logs') }}"
+           class="text-gray-600 hover:text-blue-600 mr-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" 
+                      d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
+            </svg>
+        </a>
+    </div>
+@endcan
+
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
             <!-- Amount -->
@@ -48,6 +62,9 @@
                class="px-6 py-3 text-sm font-semibold bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 transition">
                 {{ __('Back') }}
             </a>
+
+
+             
         </div>
 
     </div>

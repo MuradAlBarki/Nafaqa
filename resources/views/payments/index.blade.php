@@ -15,6 +15,12 @@
         @if(session('success'))
             <div class="mb-6 p-4 bg-green-100 text-green-700 rounded shadow-sm">{{ session('success') }}</div>
         @endif
+        
+               @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+        @endif
 
         @include('payments.list_table', ['payments' => $payments, 'showPagination' => true])
     </div>

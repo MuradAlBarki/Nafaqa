@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 return [
     'accepted'               => 'يجب قبول :attribute.',
+    'obligation_created_amount' => 'تم تحديد التزام بنفقة لقضية ذات صلة بك بالقيمة الشهرية :amount دينار ليبي',
+    'obligation_updated_amount' => 'تم تحديث التزام بنفقة لقضية ذات صلة بك بالقيمة الشهرية :amount دينار ليبي',
     'accepted_if'            => 'يجب قبول :attribute في حالة :other يساوي :value.',
     'active_url'             => 'حقل :attribute لا يُمثّل رابطًا صحيحًا.',
     'after'                  => 'يجب على حقل :attribute أن يكون تاريخًا لاحقًا للتاريخ :date.',

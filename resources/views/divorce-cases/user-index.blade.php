@@ -14,6 +14,12 @@
             </div>
         @endif
 
+               @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+        @endif
+
         <div class="overflow-x-auto bg-white shadow rounded-lg">
             <table class="min-w-full divide-y divide-gray-200 text-sm">
                 <thead class="bg-gray-100 text-gray-600 uppercase text-xs tracking-wider">
@@ -50,7 +56,8 @@
                                 <div class="flex space-x-3 items-center">
                             
 
-
+           @if($divorceCase->payments()->exists())
+                                    @can('viewAny', [\App\Models\Payment::class, $divorceCase])
             <a href="{{ route('divorce-cases.payments.index', $divorceCase) }}"
                title="List Payments"
                class="text-gray-600 hover:text-blue-600 mr-2">
@@ -64,25 +71,13 @@
   <circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/>
   <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 9h19.5M2.25 15h19.5"/>
 </svg>
-
+@endcan
+@endif
 
 
 
 
             </a>
-   
-
-                                    @can('update', $divorceCase)
-                                    <!-- Edit -->
-                                    <a href="{{ route('divorce-cases.payments.create', $divorceCase) }}" title="Edit" class="text-gray-600 hover:text-yellow-500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
-                                             stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M12 20h9" />
-                                            <path d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4L16.5 3.5z" />
-                                        </svg>
-                                    </a>
-                                    @endcan
 
                                 </div>
                             </td>

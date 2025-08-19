@@ -3,6 +3,7 @@
 {{-- Single Row: First Name, Nationality No, Date of Birth (3 columns) --}}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 mt-4">
 
+    {{-- First Name --}}
     <div>
         <label for="first_name" class="block text-sm font-medium text-gray-700">{{ __('First Name') }}</label>
         <input
@@ -17,26 +18,37 @@
             oninput="this.setCustomValidity('')"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
         />
+        @error('first_name')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
 
+    {{-- Nationality No --}}
     <div>
-        <label for="nationality_no" class="block text-sm font-medium text-gray-700">{{ __('National No') }}</label>
+        <label for="nationality_no" class="block text-sm font-medium text-gray-700">
+            {{ __('National No') }} {{ __('optional') }}
+        </label>
         <input
-            type="text"
-            name="nationality_no"
-            id="nationality_no"
-            value="{{ old('nationality_no', $child->nationality_no ?? '') }}"
-            placeholder="{{ __('xxxxxxxxxxxx') }}"
-            minlength="12"
-            maxlength="12"
-            pattern="^[12][0-9]{11}$"
-            title="{{ __('Nationality number must be 12 digits starting with 1 or 2') }}"
-            oninvalid="this.setCustomValidity('{{ __('Please enter a valid 12-digit Nationality Number starting with 1 or 2') }}')"
-            oninput="this.setCustomValidity('')"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-        />
+        type="text"
+        name="nationality_no"
+        id="nationality_no"
+        value="{{ old('nationality_no', $child->nationality_no ?? '') }}"
+        placeholder="{{ __('xxxxxxxxxxxx') }}"
+        minlength="12"
+        maxlength="12"
+        pattern="(^$)|(^[12][0-9]{11}$)"
+        title="{{ __('Nationality number must be 12 digits starting with 1 or 2, or leave it empty') }}"
+        oninvalid="this.setCustomValidity('{{ __('Please enter a valid 12-digit Nationality Number starting with 1 or 2, or leave it empty') }}')"
+        oninput="this.setCustomValidity('')"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+    />
+
+        @error('nationality_no')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
 
+    {{-- Date of Birth --}}
     <div>
         <label for="date_of_birth" class="block text-sm font-medium text-gray-700">{{ __('Date of Birth') }}</label>
         <input
@@ -50,6 +62,9 @@
             oninput="this.setCustomValidity('')"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
         />
+        @error('date_of_birth')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
 
 </div>
@@ -57,6 +72,7 @@
 {{-- Second Row: Gender + Birth Certificate --}}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
 
+    {{-- Gender --}}
     <div>
         <label for="gender" class="block text-sm font-medium text-gray-700">{{ __('Gender') }}</label>
         <select
@@ -71,8 +87,12 @@
                 </option>
             @endforeach
         </select>
+        @error('gender')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
 
+    {{-- Birth Certificate --}}
     <div>
         <label for="birth_certificate" class="block text-sm font-medium text-gray-700">{{ __('Birth Certificate') }}</label>
         <input
@@ -90,6 +110,9 @@
                    file:bg-indigo-50 file:text-indigo-700
                    hover:file:bg-indigo-100"
         />
+        @error('birth_certificate')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
 
     {{-- Empty column for alignment --}}

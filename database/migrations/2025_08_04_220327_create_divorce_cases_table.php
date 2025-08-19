@@ -13,7 +13,7 @@ class CreateDivorceCasesTable extends Migration
             $table->id();
             $table->foreignId('mother_id')->constrained('profile_roles')->onDelete('cascade');
             $table->foreignId('father_id')->constrained('profile_roles')->onDelete('cascade');
-            $table->string('case_no')->unique();
+            $table->string('case_no');
             $table->date('divorce_date');
             $table->string('court_document');
             $table->tinyInteger('status')->default(StatusEnum::Pending->value);

@@ -56,7 +56,7 @@ class UserController extends Controller
          activity()
             ->causedBy(auth()->user())
             ->performedOn($user)
-            ->log('Created');
+            ->log('Change Permissions');
 
         return redirect()->route('users.index')->with('success', __('Permissions updated.'));
     }

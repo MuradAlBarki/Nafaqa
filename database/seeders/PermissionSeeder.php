@@ -11,24 +11,36 @@ class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
+
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $permissions = ['viewAny', 'view', 'create', 'update', 'changeStatus', 'delete'];
         $features = ['users', 'profileRoles', 'divorceCases', 'children', 'obligations', 'payments'];
 
-        $allPermissionNames = ['viewAny.epayments', 'view.epayments', 'download.reports', 'viewAny.Logs'];
+        $extraPermissions = [
+            'epayments.viewAny',
+            'epayments.view',
+            'reports.download',
+            'logs.viewAny',
+        ];
+
+        $allPermissionNames = [];
 
         foreach ($features as $feature) {
             foreach ($permissions as $action) {
-                $permissionName = "{$feature}.{$action}";
-                Permission::firstOrCreate([
-                    'name' => $permissionName,
-                    'guard_name' => 'web',
-                ]);
-                $allPermissionNames[] = $permissionName;
+                $allPermissionNames[] = "{$feature}.{$action}";
             }
         }
 
+        $allPermissionNames = array_merge($allPermissionNames, $extraPermissions);
+
+
+        foreach ($allPermissionNames as $permissionName) {
+            Permission::firstOrCreate([
+                'name' => $permissionName,
+                'guard_name' => 'web',
+            ]);
+        }
    
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $adminRole->syncPermissions($allPermissionNames); 
@@ -50,7 +62,7 @@ class PermissionSeeder extends Seeder
             ['phone' => '0954440744'],
             [
                 'name' => 'محمد الخبولي',
-                'email' => 'test@test.com',
+                'email' => 'moopzaad@gmail.com',
                 'password' => bcrypt('@password'),
             ]);
 
@@ -58,7 +70,7 @@ class PermissionSeeder extends Seeder
             ['phone' => '0943383941'],
             [
                 'name' => 'الاء حسين',
-                'email' => 'arth@test.com',
+                'email' => 'mb2103005@cctt.edu.ly',
                 'password' => bcrypt('@password'),
             ]);
     

@@ -7,10 +7,12 @@ use App\PaymentStatusEnum;
 use App\StatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Payment extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = ['divorce_case_id','obligation_id','amount','payment_date', 'due_date', 'proof_document_url','status'];
 
@@ -19,6 +21,19 @@ class Payment extends Model
         'payment_date' => 'date',
         'due_date' => 'date',
     ];
+
+     public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('payment')  
+            ->logAll()                 
+            ->dontSubmitEmptyLogs(false);
+    }
+
+    public function getDescriptionForEvent(string $eventName): string
+    {
+        return "{$eventName} on Payment #{$this->id}";
+    }
 
     public function divorceCase()
     {

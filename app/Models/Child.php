@@ -7,11 +7,12 @@ use App\StatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Child extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'case_id',
@@ -20,6 +21,7 @@ class Child extends Model
         'date_of_birth',
         'gender',
         'status',
+        'birth_certificate_url',
     ];
 
       protected $casts = [
@@ -27,6 +29,19 @@ class Child extends Model
         'gender' => GenderEnum::class,
         'date_of_birth' => 'date'
     ];
+
+   public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('child')  
+            ->logAll()                 
+            ->dontSubmitEmptyLogs(false);
+    }
+
+    public function getDescriptionForEvent(string $eventName): string
+    {
+        return "{$eventName} on Child #{$this->id}";
+    }
 
     public function divorceCase()
     {

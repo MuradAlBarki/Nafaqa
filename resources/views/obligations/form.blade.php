@@ -14,10 +14,13 @@
             oninput="this.setCustomValidity('')"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
         />
+        @error('amount')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
 
     <div>
-        <label for="start_date" class="block text-sm font-medium text-gray-700" >{{ __('Start Date') }}</label>
+        <label for="start_date" class="block text-sm font-medium text-gray-700">{{ __('Start Date') }}</label>
         <input
             type="date"
             name="start_date"
@@ -29,6 +32,8 @@
             oninput="this.setCustomValidity('')"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
         />
+        @error('start_date')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
 </div>
-

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DivorceCase;
 use App\Models\Obligation;
+use App\Notifications\UserAlertNotification;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
@@ -27,7 +28,16 @@ class ObligationController extends Controller
             'start_date' => 'required|date',
         ]);
 
-        $divorceCase->obligation()->create($validated);
+        $obligation = $divorceCase->obligation()->create($validated);
+        
+        foreach($divorceCase->parents() as $parent){
+        $parent->user->notify(new UserAlertNotification(
+        __('Obligation Created'),
+        __('validation.obligation_created_amount', ['amount' => number_format($obligation->amount, 2)]),
+        'obligation',
+        route('divorce-cases.show', $divorceCase)
+        ));
+    }
 
         return redirect()
             ->route('divorce-cases.index', $divorceCase)
@@ -59,6 +69,15 @@ class ObligationController extends Controller
         ]);
 
         $obligation->update($validated);
+
+        foreach($divorceCase->parents() as $parent){
+        $parent->user->notify(new UserAlertNotification(
+        __('Obligation Updated'),
+        __('validation.obligation_updated_amount', ['amount' => number_format($obligation->amount, 2)]),
+        'obligation',
+        route('divorce-cases.show', $divorceCase)
+        ));
+    }
 
         return redirect()
             ->route('divorce-cases.index', $divorceCase)

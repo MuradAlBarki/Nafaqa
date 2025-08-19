@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\GenderEnum;
 use App\Models\DivorceCase;
 use App\Models\ProfileRole;
+use App\Notifications\UserAlertNotification;
+use App\StatusEnum;
 use Illuminate\Container\Attributes\Storage;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -40,8 +42,8 @@ class DivorceCaseController extends Controller
     {
         $this->authorize('create', DivorceCase::class);
 
-        $mothers = ProfileRole::where('gender', GenderEnum::Female)->get();
-        $fathers = ProfileRole::where('gender', GenderEnum::Male)->get();
+        $mothers = ProfileRole::where(['gender'=> GenderEnum::Female, 'status' => StatusEnum::Active->value])->get();
+        $fathers = ProfileRole::where(['gender'=> GenderEnum::Male, 'status' => StatusEnum::Active->value])->get();
 
         return view('divorce-cases.create', compact('mothers', 'fathers'));
     }
@@ -61,12 +63,33 @@ class DivorceCaseController extends Controller
             'court_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
+
+        $exists = DivorceCase::where('father_id', $request->father_id)
+        ->where('mother_id', $request->mother_id)->whereIn('status', [
+        StatusEnum::Active->value,
+        StatusEnum::Pending->value,
+        ])->exists();
+
+        if ($exists) {
+           return redirect()->route('divorce-cases.index')
+                ->with('error', __('This divorce case already exists for the selected parents.'))
+                ->withInput();
+    }
+
         if ($request->hasFile('court_document')) {
             $validated['court_document_url'] = $request->file('court_document')->store('court_documents', 'public');
         }
 
-        DivorceCase::create($validated);
+        $divorceCase = DivorceCase::create($validated);
 
+        foreach($divorceCase->parents() as $parent){
+        $parent->user->notify(new UserAlertNotification(
+        __('Divorce Case Created'),
+        __('A divorce case created with your profile'),
+        'divorseCase',
+        route('divorce-cases.show', $divorceCase)
+        ));
+    }
         return redirect()->route('divorce-cases.index')->with('success', __('Created successfully.'));
     }
 
@@ -108,12 +131,33 @@ class DivorceCaseController extends Controller
             'court_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
-          if($request->file('court_document')){
+        $exists = DivorceCase::where('father_id', $request->father_id)
+        ->where('mother_id', $request->mother_id)->whereIn('status', [
+        StatusEnum::Active->value,
+        StatusEnum::Pending->value,
+        ])->where('id', '!=', $divorceCase->id)->exists();
+
+        if ($exists) {
+           return redirect()->route('divorce-cases.index')
+                ->with('error', __('This divorce case already exists for the selected parents.'))
+                ->withInput();
+    }
+
+        if($request->file('court_document')){
             $validated['court_document_url'] = $request->file('court_document')->store('documents', 'public');
         }
 
 
         $divorceCase->update($validated);
+
+
+        foreach($divorceCase->parents() as $parent){
+        $parent->user->notify(new UserAlertNotification(
+        'Divorce Case Updated',
+        'A divorce case updated with your profile',
+        'divorseCase'
+        ));
+    }
 
         return redirect()->route('divorce-cases.index')->with('success', __('Updated successfully.'));
     }

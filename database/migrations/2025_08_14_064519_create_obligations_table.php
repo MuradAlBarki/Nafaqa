@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('obligations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('divorce_case_id')->constrained()->onDelete('cascade');
-            $table->decimal('amount');
+            $table->decimal('amount', 10, 0);
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->tinyInteger('status')->default(StatusEnum::Active->value);

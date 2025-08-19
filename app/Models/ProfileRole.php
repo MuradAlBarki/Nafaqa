@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\DocumentTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use App\StatusEnum;
 use App\GenderEnum;
+use Dom\DocumentType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -33,24 +36,23 @@ class ProfileRole extends Model
     protected $appends = ['is_father', 'is_mother'];
 
 
-    public function getActivitylogOptions(): \Spatie\Activitylog\LogOptions
+public function getActivitylogOptions(): LogOptions
 {
-    return \Spatie\Activitylog\LogOptions::defaults()->logOnlyDirty()->dontSubmitEmptyLogs();
+    return LogOptions::defaults()
+        ->useLogName('profile_role') 
+        ->logAll()                   
+        ->dontSubmitEmptyLogs(false);
 }
 
-    protected static $logName = 'profile_role';
-
-    protected static $logAttributes = ['*']; // Track all attributes
-    protected static $logOnlyDirty = true;   // Only log changed attributes
-
-    public function getDescriptionForEvent(string $eventName): string
-    {
-        return "{$eventName} on ProfileRole #{$this->id}";
-    }
+public function getDescriptionForEvent(string $eventName): string
+{
+    return "{$eventName} on ProfileRole #{$this->id}";
+}
 
     protected $casts = [
         'status' => StatusEnum::class,
         'gender' => GenderEnum::class,
+        'document_type' => DocumentTypeEnum::class,
     ];
 
      public function user()
@@ -73,7 +75,7 @@ class ProfileRole extends Model
     {
 
         return optional(
-            $this->activities()->where('description', 'Created')->latest()->first()
+            $this->activities()->where('event', 'Created')->latest()->first()
         )->causer?->name;
     }
 

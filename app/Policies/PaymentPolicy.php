@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\DivorceCase;
 use App\PaymentStatusEnum;
 use App\Models\Payment;
 use App\Models\User;
@@ -21,6 +22,11 @@ class PaymentPolicy
     public function create(User $user): bool
     {
         return $user->can('payments.create');
+    }
+
+    public function viewAny(User $user, DivorceCase $divorceCase): bool
+    {
+        return $user->can('payments.show') || $divorceCase->father->user_id === $user->id;
     }
 
     public function show(User $user, Payment $payment): bool

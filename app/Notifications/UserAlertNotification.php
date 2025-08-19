@@ -28,8 +28,14 @@ class UserAlertNotification extends Notification
     {
         $channels = ['database', 'broadcast']; // default: in-app + real-time
 
-        // send email only for payments
-        if ($this->type === 'payment' && !empty($notifiable->email)) {
+        // send email only for:
+        if (($this->type === 'payment' || 
+            $this->type === 'obligation' ||
+            $this->type === 'payment' ||
+            $this->type === 'epayment' ||
+            $this->title === 'Divorce Case Created' ||
+            $this->title === __('Divorce Case Created')) 
+        && !empty($notifiable->email)) {
             $channels[] = 'mail';
         }
 

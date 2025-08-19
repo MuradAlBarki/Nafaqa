@@ -164,6 +164,11 @@ return [
     'url' => 'The :attribute field must be a valid URL.',
     'ulid' => 'The :attribute field must be a valid ULID.',
     'uuid' => 'The :attribute field must be a valid UUID.',
+    'obligation_created_amount' => 'An obligation decided for a related case with the monthly value :amount Libyan Dinar',
+    'obligation_updated_amount' => 'An obligation updated for a related case with the monthly value :amount Libyan Dinar',
+
+
+
 
     /*
     |--------------------------------------------------------------------------

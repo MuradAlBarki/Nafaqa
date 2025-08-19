@@ -3,7 +3,7 @@
 {{-- Row 1: Parents (2 columns) --}}
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 mt-4">
 
-<div>
+    <div>
         <label for="father_id" class="block text-sm font-medium text-gray-700">{{ __('Father') }}</label>
         <select
             name="father_id"
@@ -16,12 +16,14 @@
             <option value="">{{ __('Select') }} {{ __('Father') }}</option>
             @foreach($fathers as $father)
                 <option value="{{ $father->id }}" {{ old('father_id', $divorceCase->father_id ?? '') == $father->id ? 'selected' : '' }}>
-                   {{ $father->first_name . ' ' . $father->mid_name . ' ' . $father->last_name }} - {{$father->national_no}}
+                   {{ $father->first_name . ' ' . $father->mid_name . ' ' . $father->last_name }} - {{$father->national_no?:$father->document_no}}
                 </option>
             @endforeach
         </select>
+        @error('father_id')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
-
 
     <div>
         <label for="mother_id" class="block text-sm font-medium text-gray-700">{{ __('Mother') }}</label>
@@ -36,13 +38,17 @@
             <option value="">{{ __('Select') }} {{ __('Mother') }}</option>
             @foreach($mothers as $mother)
                 <option value="{{ $mother->id }}" {{ old('mother_id', $divorceCase->mother_id ?? '') == $mother->id ? 'selected' : '' }}>
-                    {{ $mother->first_name . ' ' . $mother->mid_name . ' ' . $mother->last_name }} - {{$mother->national_no}}
+                    {{ $mother->first_name . ' ' . $mother->mid_name . ' ' . $mother->last_name }} - {{$mother->national_no?:$mother->document_no}}
                 </option>
             @endforeach
         </select>
+        @error('mother_id')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
     
 </div>
+
 {{-- Row 2: Case Number and Divorce Date (2 columns) --}}
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
     <div>
@@ -59,6 +65,9 @@
             oninput="this.setCustomValidity('')"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
         />
+        @error('case_no')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
     <div>
         <label for="divorce_date" class="block text-sm font-medium text-gray-700">{{ __('Divorce Date') }}</label>
@@ -73,6 +82,9 @@
             oninput="this.setCustomValidity('')"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
         />
+        @error('divorce_date')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
 </div>
 
@@ -94,4 +106,7 @@
                file:bg-indigo-50 file:text-indigo-700
                hover:file:bg-indigo-100"
     />
+    @error('court_document')
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+    @enderror
 </div>

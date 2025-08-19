@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2><strong>{{ __('Create') }} {{ __('Child') }}</strong></h2>
+        <h2><strong>{{ __('Add') }} {{ __('Child') }}</strong></h2>
     </x-slot>
 
     <div class="p-8 max-w-6xl mx-auto bg-white rounded shadow mt-10">

@@ -12,6 +12,12 @@
             </div>
         @endif
 
+               @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+        @endif
+        
         <div class="overflow-x-auto bg-white shadow rounded-lg">
             <table class="min-w-full divide-y divide-gray-200 text-sm">
                 <thead class="bg-gray-100 text-gray-600 uppercase text-xs tracking-wider">
@@ -48,24 +54,40 @@
         </svg>
     </a>
 @endcan
-@can('viewAny.Logs')
-    <a href="{{ route('profile-roles.logs', $profileRole->id) }}" 
-       title="{{ __('View Logs') }}"
-       class="text-gray-600 hover:text-blue-600 mr-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" 
-                  d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
-        </svg>
-    </a>
+
+@can('update', $profileRole)
+                                    <div class="flex items-center">
+                                    <div class="mr-2">
+                                    <!-- Edit (Pencil) -->
+                                    <a href="{{ route('profile-roles.edit', $profileRole) }}" title="Edit" class="text-gray-600 hover:text-yellow-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 20h9" />
+                                            <path d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                        </svg>
+                                    </a>
+                                    </div>
+                                    </div>
 @endcan
 
-                                </div>
-                            </td>
-                        </tr>
+@can('viewAny', \Spatie\Activitylog\Models\Activity::class)
+                    <a href="{{ route('logs.index', ['model' => App\Models\ProfileRole::class, 'id' => $profileRole->id]) }}"
+                title="{{ __('View Logs') }}"
+                class="text-gray-600 hover:text-blue-600 mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" 
+                            d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
+                    </svg>
+                </a>
+                @endcan
+
+            </div>
+        </td>
+    </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center py-6 text-gray-500">No profileRoles found.</td>
+                            <td colspan="4" class="text-center py-6 text-gray-500">{{__("No profileRoles found.")}}</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -77,44 +99,4 @@
         </div>
     </div>
 </x-app-layout>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const deleteButtons = document.querySelectorAll('.delete-btn');
-
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', function (e) {
-            e.preventDefault();
-            const form = this.closest('form');
-
-            Swal.fire({
-                title: 'هل أنت متأكد؟',
-                text: "لا يمكن التراجع عن هذا الإجراء!",
-                icon: 'warning',
-                iconColor: '#e07b7b',  // softer red for warning icon
-                showCancelButton: true,
-                confirmButtonText: 'نعم، احذف',
-                cancelButtonText: 'إلغاء',
-                confirmButtonColor: '#d9534f',  // bootstrap's danger red
-                cancelButtonColor: '#6c757d',   // bootstrap's secondary gray
-                reverseButtons: true, // مناسب للغات اليمين لليسار
-                buttonsStyling: true,
-                customClass: {
-                    popup: 'font-sans text-base p-6',
-                    title: 'text-lg font-semibold',
-                    confirmButton: 'px-6 py-2 rounded-md shadow-md',
-                    cancelButton: 'px-6 py-2 rounded-md shadow-md',
-                    content: 'mt-4 text-sm text-gray-700',
-                },
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
-        });
-    });
-});
-</script>
-
-
 

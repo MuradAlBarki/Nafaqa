@@ -11,16 +11,12 @@ class NotificationController extends Controller
     {
         $notification = DatabaseNotification::findOrFail($id);
 
-        // Make sure this notification belongs to the logged-in user
-        if ($notification->notifiable_id !== auth()->id()) {
-            abort(403);
-        }
-
         $notification->markAsRead();
 
         // Redirect to the original URL stored in notification
-        $url = $notification->data['url'] ?? route('dashboard');
+        // $url = $notification->data['url'] ?? route('dashboard');
 
-        return redirect($url);
+        // return redirect($url);
+        return back();
     }
 }
