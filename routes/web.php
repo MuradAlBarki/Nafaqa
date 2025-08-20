@@ -16,10 +16,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('/profile-roles/export', [ProfileRoleController::class, 'export'])
-//     ->name('profile-roles.export')
-//     ->middleware('can:export,App\Models\ProfileRole');
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
@@ -69,8 +65,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profiles/export', [ProfileRoleController::class, 'export'])
     ->name('profile-roles.export')
     ->middleware('can:export,App\Models\ProfileRole');
-
-
     
 });
 

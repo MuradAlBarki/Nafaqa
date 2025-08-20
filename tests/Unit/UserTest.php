@@ -76,4 +76,46 @@ class UserTest extends TestCase
         $user->delete();
         $this->assertSoftDeleted($user);
     }
+
+    #[Test]
+    public function it_casts_status_enum_correctly()
+    {
+        $user = User::factory()->create(['status' => StatusEnum::Active]);
+        $this->assertInstanceOf(StatusEnum::class, $user->status);
+        $this->assertEquals(StatusEnum::Active, $user->status);
+    }
+
+    #[Test]
+    public function it_logs_activity_on_create_update_delete()
+    {
+        $user = User::factory()->create();
+        $this->assertDatabaseHas('activity_log', [
+            'log_name' => 'user',
+            'event' => 'created',
+            'subject_id' => $user->id,
+            'subject_type' => User::class,
+        ]);
+
+        $user->update(['name' => 'Updated Name']);
+        $this->assertDatabaseHas('activity_log', [
+            'event' => 'updated',
+            'subject_id' => $user->id,
+        ]);
+
+        $user->delete();
+        $this->assertDatabaseHas('activity_log', [
+            'event' => 'deleted',
+            'subject_id' => $user->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_returns_event_description()
+    {
+        $user = User::factory()->create();
+        $description = $user->getDescriptionForEvent('created');
+
+        $this->assertEquals("created on User #{$user->id}", $description);
+    }
+
 }

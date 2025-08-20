@@ -55,4 +55,39 @@ class ChildTest extends TestCase
         $child->delete();
         $this->assertSoftDeleted($child);
     }
+
+    #[Test]
+    public function it_casts_enums_at_runtime()
+    {
+        $child = Child::factory()->create([
+            'status' => StatusEnum::Active,
+            'gender' => GenderEnum::Male,
+        ]);
+
+        $this->assertInstanceOf(StatusEnum::class, $child->status);
+        $this->assertEquals(StatusEnum::Active, $child->status);
+
+        $this->assertInstanceOf(GenderEnum::class, $child->gender);
+        $this->assertEquals(GenderEnum::Male, $child->gender);
+    }
+
+    #[Test]
+    public function it_returns_event_description()
+    {
+        $child = Child::factory()->create();
+        $description = $child->getDescriptionForEvent('created');
+
+        $this->assertEquals("created on Child #{$child->id}", $description);
+    }
+
+    #[Test]
+    public function it_includes_birth_certificate_url_when_set()
+    {
+        $child = Child::factory()->create([
+            'birth_certificate_url' => 'https://example.com/certificate.pdf'
+        ]);
+
+        $this->assertEquals('https://example.com/certificate.pdf', $child->birth_certificate_url);
+    }
+
 }

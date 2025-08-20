@@ -9,6 +9,10 @@ use App\StatusEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use App\Models\User;
+use App\Models\Obligation;
+use App\Models\Payment;
+use Illuminate\Support\Carbon;
 
 class DivorceCaseTest extends TestCase
 {
@@ -71,4 +75,76 @@ class DivorceCaseTest extends TestCase
         $case->delete();
         $this->assertSoftDeleted($case);
     }
+
+    #[Test]
+    public function it_casts_status_and_date_at_runtime()
+    {
+        $case = DivorceCase::factory()->create([
+            'status' => StatusEnum::Active,
+            'divorce_date' => now(),
+        ]);
+
+        $this->assertInstanceOf(StatusEnum::class, $case->status);
+        $this->assertInstanceOf(Carbon::class, $case->divorce_date);
+    }
+
+    #[Test]
+    public function it_has_one_obligation()
+    {
+        $case = DivorceCase::factory()->create();
+        $obligation = Obligation::factory()->create(['divorce_case_id' => $case->id]);
+
+        $this->assertTrue($case->obligation->is($obligation));
+    }
+
+    #[Test]
+    public function it_has_many_payments()
+    {
+        $case = DivorceCase::factory()->create();
+        Payment::factory()->count(2)->create(['divorce_case_id' => $case->id]);
+
+        $this->assertCount(2, $case->payments);
+        $this->assertInstanceOf(Payment::class, $case->payments->first());
+    }
+
+    #[Test]
+    public function it_returns_parents_collection()
+    {
+        $case = DivorceCase::factory()->create();
+        $parents = $case->parents();
+
+        $this->assertTrue($parents->contains($case->mother));
+        $this->assertTrue($parents->contains($case->father));
+    }
+
+    #[Test]
+    public function it_can_check_if_user_is_father_or_mother()
+    {
+        $fatherUser = User::factory()->create();
+        $motherUser = User::factory()->create();
+
+        $father = ProfileRole::factory()->create(['user_id' => $fatherUser->id]);
+        $mother = ProfileRole::factory()->create(['user_id' => $motherUser->id]);
+
+        $case = DivorceCase::factory()->create([
+            'father_id' => $father->id,
+            'mother_id' => $mother->id,
+        ]);
+
+        $this->assertTrue($case->isFather($fatherUser));
+        $this->assertFalse($case->isFather($motherUser));
+
+        $this->assertTrue($case->isMother($motherUser));
+        $this->assertFalse($case->isMother($fatherUser));
+    }
+
+    #[Test]
+    public function it_returns_event_description()
+    {
+        $case = DivorceCase::factory()->create();
+        $description = $case->getDescriptionForEvent('created');
+
+        $this->assertEquals("created on DivorceCase #{$case->id}", $description);
+}
+
 }
