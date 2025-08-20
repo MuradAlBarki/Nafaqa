@@ -452,5 +452,7 @@
     "EPayment Done": "تم الدفع الإلكتروني بنجاح.",
     "Epayment done successfuly to a case related to you": "تم الدفع الإلكتروني بنجاح في قضية متعلقة بك.",
     "EPayment Failed": "فشل الدفع الإلكتروني.",
-    "The Epayment failed": "نعتذر، فشل الدفع الإلكتروني."
+    "The Epayment failed": "نعتذر، فشل الدفع الإلكتروني.",
+    "Welcome to Nafaqa system": "مرحباً بكم في منظومة النفقة",
+    "This system is not an official system, Its a project for Advanced Programming - PHP team": " هذا النظام غير رسمي، وهو مشروع لمقرر البرمجة المتقدمة لفريق لغة PHP."
 }

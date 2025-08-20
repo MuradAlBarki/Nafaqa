@@ -55,9 +55,9 @@
     {{-- Main content --}}
     <main class="flex flex-col-reverse lg:flex-row w-full max-w-[335px] lg:max-w-4xl transition-opacity duration-700 opacity-100">
         <div class="flex-1 p-6 pb-12 lg:p-20 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0_0_0_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0_0_0_1px_#fffaed2d] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none">
-            <h1 class="mb-2 font-medium text-xl">مرحباً بكم في منظومة النفقة</h1>
+            <h1 class="mb-2 font-medium text-xl">{{__('Welcome to Nafaqa system')}}</h1>
             <p class="text-[#706f6c] dark:text-[#A1A09A] text-[13px] leading-[20px]">
-                هذا النظام غير رسمي، وهو مشروع لمقرر البرمجة المتقدمة لفريق لغة PHP.
+              {{__('This system is not an official system, Its a project for Advanced Programming - PHP team')}}
             </p>
         </div>
 
