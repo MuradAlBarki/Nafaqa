@@ -25,5 +25,4 @@ class ActivityLogController extends Controller
         return view('logs.index', compact('logs'));
     }
 
-
 }

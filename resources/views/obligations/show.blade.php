@@ -62,8 +62,6 @@
                class="px-6 py-3 text-sm font-semibold bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 transition">
                 {{ __('Back') }}
             </a>
-
-
              
         </div>
 
