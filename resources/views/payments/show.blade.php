@@ -116,10 +116,10 @@
                             {{ __('Paid Electronically') }}
                         </span>
                         <span class="text-sm text-gray-700">
-                            {{ __('Gateway') }} : <strong>{{ $epay->gateway }}</strong>
+                            {{ __('Gateway') }} : <strong>{{ __($epay->gateway) }}</strong>
                         </span>
                         <span class="text-sm text-gray-700">
-                            {{ __('Reference No') }}ؤ: <strong>{{ $epay->response_json['RRN'] ?? 'N/A' }}</strong>
+                            {{ __('Reference No') }}: <strong>{{ $epay->response_json['SystemReference'] ?? 'N/A' }}</strong>
                         </span>
                     </div>
                 @endif
@@ -129,14 +129,13 @@
             {{-- Approve/Reject + Back buttons --}}
             <div class="mt-4 flex justify-center gap-3">
 
-                @if($payment->status === \App\PaymentStatusEnum::PaidNotVerified &&
-                    ($divorceCase->isMother(auth()->user()) || auth()->user()->can('changeStatus', $payment)))
+                @if ($payment->status === \App\PaymentStatusEnum::PaidNotVerified && $divorceCase->isMother(auth()->user()))
 
                     <form action="{{ route('payments.review', $payment) }}" method="POST" class="inline-block">
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="status"
-                               value="{{ $divorceCase->isMother(auth()->user()) ? \App\PaymentStatusEnum::ConfirmedByMother->value : \App\PaymentStatusEnum::ConfirmedBySystem->value }}">
+                               value="{{ \App\PaymentStatusEnum::ConfirmedByMother->value}}">
                         <button type="submit"
                                 class="px-5 py-2 bg-green-300 text-green-800 rounded-md hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-300 transition">
                             {{ __('Approve') }}
@@ -147,7 +146,32 @@
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="status"
-                               value="{{ $divorceCase->isMother(auth()->user()) ? \App\PaymentStatusEnum::RejectedByMother->value : \App\PaymentStatusEnum::RejectedBySystem->value }}">
+                               value="{{\App\PaymentStatusEnum::RejectedByMother->value}}">
+                        <button type="submit"
+                                class="px-5 py-2 bg-red-300 text-red-800 rounded-md hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-red-300 transition">
+                            {{ __('Reject') }}
+                        </button>
+                    </form>
+                @endif
+
+                @if ($payment->status === \App\PaymentStatusEnum::RejectedByMother && auth()->user()->can('changeStatus', $payment))
+
+                    <form action="{{ route('payments.review', $payment) }}" method="POST" class="inline-block">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="status"
+                               value="{{\App\PaymentStatusEnum::ConfirmedBySystem->value }}">
+                        <button type="submit"
+                                class="px-5 py-2 bg-green-300 text-green-800 rounded-md hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-300 transition">
+                            {{ __('Approve') }}
+                        </button>
+                    </form>
+
+                    <form action="{{ route('payments.review', $payment) }}" method="POST" class="inline-block">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="status"
+                               value="{{\App\PaymentStatusEnum::RejectedBySystem->value }}">
                         <button type="submit"
                                 class="px-5 py-2 bg-red-300 text-red-800 rounded-md hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-red-300 transition">
                             {{ __('Reject') }}

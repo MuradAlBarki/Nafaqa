@@ -26,7 +26,7 @@ class PaymentPolicy
 
     public function viewAny(User $user, DivorceCase $divorceCase): bool
     {
-        return $user->can('payments.show') || $divorceCase->father->user_id === $user->id;
+        return $user->can('payments.show') || $divorceCase->father->user_id === $user->id || $divorceCase->mother->user_id === $user->id;
     }
 
     public function show(User $user, Payment $payment): bool

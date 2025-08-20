@@ -66,7 +66,14 @@ class PaymentController extends Controller
                 ->withErrors([ __('A pending payment already exists for this date.')]);
         }
 
-        $divorceCase->payments()->create($validated);
+        $payment = $divorceCase->payments()->create($validated);
+
+        $divorceCase->father->user->notify(new UserAlertNotification(
+        __('Payment Created'),
+        __('validation.payment_created_amount', ['amount' => number_format($payment->amount, 2)]),
+        'payment',
+        route('divorce-cases.payments.index', [$divorceCase, $payment])
+        ));
 
         return redirect()
             ->route('divorce-cases.obligations.show', [$divorceCase, $divorceCase->obligation])
@@ -103,12 +110,17 @@ class PaymentController extends Controller
 
         $payment->update($validated);
 
+        $divorceCase->father->user->notify(new UserAlertNotification(
+        __('Payment Updated'),
+        __('validation.payment_updated_amount', ['amount' => number_format($payment->amount, 2)]),
+        'payment',
+        route('divorce-cases.payments.index', [$divorceCase, $payment])
+        ));
+
         return redirect()
             ->route('divorce-cases.obligations.show', [$divorceCase, $divorceCase->obligation])
             ->with('success', __('Payment updated successfully.'));
     }
-
-    
 
 
     public function review(Request $request, Payment $payment)
@@ -123,6 +135,15 @@ class PaymentController extends Controller
     $payment->save();
 
     $divorceCase = $payment->divorceCase;
+
+    foreach($divorceCase->parents() as $parent){
+    $parent->user->notify(new UserAlertNotification(
+    __('Payment Reviewed'),
+    __('payment reviewed to a case related to you'),
+    'payment',
+    route('divorce-cases.payments.index', [$divorceCase, $payment])
+    ));
+    }
 
     if ($divorceCase->isMother(auth()->user())) {
         return redirect()
@@ -163,9 +184,18 @@ class PaymentController extends Controller
 
         $payment->update($validated);
 
+        foreach($divorceCase->parents() as $parent){
+        $parent->user->notify(new UserAlertNotification(
+        __('Payment Done'),
+        __('payment done to a case related to you'),
+        'payment',
+        route('divorce-cases.payments.index', [$divorceCase, $payment])
+        ));
+    }
+
         return redirect()
-               ->route('divorce-cases.obligations.show', [$divorceCase, $divorceCase->obligation])
-            ->with('success', __('Payment marked as paid.'));
+               ->route('divorce-cases.payments.index', [$divorceCase, $payment])
+            ->with('success', __('Payment Done'));
     }
 
     public function success(Request $request, Payment $payment)
@@ -178,15 +208,18 @@ class PaymentController extends Controller
         ]);
 
         $payment->status = PaymentStatusEnum::PaidNotVerified;
+        $payment->payment_date = today();
         $payment->save();
 
-        auth()->user()->notify(new UserAlertNotification(
-        'Payment Successful',
-        "Your payment #{$payment->id} was successful.",
-        'payment',
-        route('payments.show', $payment)
-));
-
+        $divorceCase = $payment->divorceCase;
+        foreach($divorceCase->parents() as $parent){
+        $parent->user->notify(new UserAlertNotification(
+        __('EPayment Done'),
+        __('Epayment done successfuly to a case related to you'),
+        'epayment',
+        route('divorce-cases.payments.index', [$divorceCase, $payment])
+        ));
+    }
 
     }
 
@@ -198,6 +231,14 @@ class PaymentController extends Controller
             'gateway' => $request->input('gateway'),
             'response_json' => $request->input('response')
         ]);
+        $divorceCase = $payment->divorceCase;
+
+        $divorceCase->father->user->notify(new UserAlertNotification(
+        __('EPayment Failed'),
+        __('The Epayment failed'),
+        'epayment',
+        route('divorce-cases.payments.index', [$divorceCase, $payment])
+        ));
     }
 
 

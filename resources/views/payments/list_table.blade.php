@@ -72,17 +72,18 @@
         @endif
 
         <!-- Epayments Button (show only if payment has epayments) -->
-         @can('viewAny', [\App\Models\Epayment::class, $payment])
-@if($payment->epayments()->exists())
-    <a href="{{ route('epayments.index', $payment) }}"
-       title="{{ __('View Epayments') }}"
-       class="text-gray-600 hover:text-purple-600">
+        @can('viewAny', \App\Models\Epayment::class)
+        @if($payment->epayments()->exists())
+        <a href="{{ route('epayments.index', ['payment' => $payment->id]) }}"
+        title="{{ __('View Epayments') }}"
+        class="text-gray-600 hover:text-purple-600">
         <!-- SVG for Epayments -->
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-             stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M12 8v4l3 3m6 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
+     stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
+  <path stroke-linecap="round" stroke-linejoin="round" 
+        d="M6 2h12v20l-2-2-2 2-2-2-2 2-2-2-2 2zM8 6h8M8 10h8M8 14h5" />
+</svg>
+
     </a>
 @endif
 @endcan

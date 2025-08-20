@@ -166,7 +166,8 @@ return [
     'uuid' => 'The :attribute field must be a valid UUID.',
     'obligation_created_amount' => 'An obligation decided for a related case with the monthly value :amount Libyan Dinar',
     'obligation_updated_amount' => 'An obligation updated for a related case with the monthly value :amount Libyan Dinar',
-
+    'payment_created_amount' => 'You have a new obligation on the Nafaqa platform of :amount Libyan Dinars',
+    'payment_updated_amount' => 'Your obligation on the Nafaqa platform has been updated to :amount Libyan Dinars',
 
 
 

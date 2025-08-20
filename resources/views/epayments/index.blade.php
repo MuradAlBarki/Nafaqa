@@ -43,7 +43,7 @@
 
                                 <div class="flex space-x-3 items-center">
 @can('view', $epayment)
-    <a href="{{ route('payments.epayments.show', ['epayment' => $epayment->id]) }}"
+    <a href="{{ route('epayments.show', ['payment' => $epayment->payment, 'epayment' => $epayment->id]) }}"
        title="{{ __('Review Profile') }}"
        class="text-gray-600 hover:text-blue-600 mr-2">
 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"

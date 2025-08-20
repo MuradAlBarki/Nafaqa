@@ -31,8 +31,9 @@ class UserAlertNotification extends Notification
         // send email only for:
         if (($this->type === 'payment' || 
             $this->type === 'obligation' ||
-            $this->type === 'payment' ||
             $this->type === 'epayment' ||
+            $this->title === __('EPayment Done') ||
+            $this->title === 'EPayment Done' ||
             $this->title === 'Divorce Case Created' ||
             $this->title === __('Divorce Case Created')) 
         && !empty($notifiable->email)) {

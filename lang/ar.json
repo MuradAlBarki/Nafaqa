@@ -344,6 +344,7 @@
     "View Document": "عرض الملف",
     "download": "تحميل",
     "Reference No": "رقم المرجع",
+    "moamalat": "معاملات",
     "Gateway": "البوابة",
     "Paid Electronically": "تم الدفع الكترونيا",
     "Payment Details": "تفاصيل الدفعة",
@@ -441,5 +442,15 @@
     "Child":"ابن / ابنة",
     "A child has been attached to your divorce case":"تم إضافة ابن / ابنة الى قضية طلاق متعلقة بك",
     "No children found.":"لم يتم إضافة أي أطفال بعد",
-    "This divorce case already exists for the selected parents.":"توجد قضية طلاق للزوجين بالفعل"
+    "Payment Created": "تم إنشاء دفعة مالية جديدة.",
+    "Payment Done": "تم دفع دفعة مالية.",
+    "payment done to a case related to you": "تم دفع دفعة مالية في قضية متعلقة بك.",
+    "Payment Updated": "تم تحديث الدفعة المالية.",
+    "Payment updated successfully.": "تم تحديث الدفعة المالية بنجاح.",
+    "Payment Reviewed": "تمت مراجعة الدفعة المالية.",
+    "payment reviewed to a case related to you": "تمت مراجعة دفعة مالية في قضية متعلقة بك.",
+    "EPayment Done": "تم الدفع الإلكتروني بنجاح.",
+    "Epayment done successfuly to a case related to you": "تم الدفع الإلكتروني بنجاح في قضية متعلقة بك.",
+    "EPayment Failed": "فشل الدفع الإلكتروني.",
+    "The Epayment failed": "نعتذر، فشل الدفع الإلكتروني."
 }

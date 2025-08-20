@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Epayment;
-use DragonCode\Contracts\Cashier\Config\Payment;
+use App\Models\Payment;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
@@ -20,8 +20,7 @@ class EpaymentController extends Controller
         return view('epayments.index', compact('epayments'));
     }
 
-    
-    public function show(Epayment $epayment, Payment $payment)
+    public function show(Payment $payment, Epayment $epayment)
     {
         $this->authorize('view', $epayment);
 
