@@ -15,7 +15,7 @@ class CreateDivorceCasesTable extends Migration
             $table->foreignId('father_id')->constrained('profile_roles')->onDelete('cascade');
             $table->string('case_no');
             $table->date('divorce_date');
-            $table->string('court_document');
+            $table->string('court_document_url');
             $table->tinyInteger('status')->default(StatusEnum::Pending->value);
             $table->timestamps();
             $table->softDeletes();

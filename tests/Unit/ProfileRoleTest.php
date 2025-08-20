@@ -47,6 +47,7 @@ class ProfileRoleTest extends TestCase
             'status' => StatusEnum::class,
             'gender' => GenderEnum::class,
             'deleted_at' => 'datetime',
+            'document_type' => DocumentTypeEnum::class,
         ];
         $this->assertEquals($casts, (new ProfileRole())->getCasts());
     }
@@ -98,7 +99,7 @@ class ProfileRoleTest extends TestCase
         $profile = ProfileRole::factory()->create([
             'status' => StatusEnum::Active,
             'gender' => GenderEnum::Male,
-            'document_type' => DocumentTypeEnum::PASSPORT,
+            'document_type' => DocumentTypeEnum::PASSPORT->value,
         ]);
 
         $this->assertInstanceOf(StatusEnum::class, $profile->status);

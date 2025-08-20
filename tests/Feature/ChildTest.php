@@ -2,12 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\GenderEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Child;
 use App\Models\DivorceCase;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Spatie\Permission\Models\Role;
 
 class ChildTest extends TestCase
@@ -38,14 +40,21 @@ class ChildTest extends TestCase
     public function test_it_can_create_child()
     {
         $case = DivorceCase::factory()->create();
-        $response = $this->post(route('divorce-cases.children.store', $case), [
-            'first_name' => 'Child',
-            'nationality_no' => '112233445566',
-            'date_of_birth' => '2020-01-01',
-        ]);
+        $file = UploadedFile::fake()->create('birth_certificate.pdf');
 
-        $response->assertRedirect();
-        $this->assertDatabaseHas('children', ['case_id' => $case->id]);
+    $response = $this->post(route('divorce-cases.children.store', $case), [
+        'first_name' => 'John',
+        'date_of_birth' => '2020-01-01',
+        'gender' => GenderEnum::Male->value,
+        'birth_certificate' => $file, // match controller
+    ]);
+
+    $response->assertRedirect();
+    $this->assertDatabaseHas('children', [
+        'case_id' => $case->id,
+        'first_name' => 'John',
+    ]);
+
     }
 
     
@@ -54,14 +63,18 @@ class ChildTest extends TestCase
         $case = DivorceCase::factory()->create();
         $child = Child::factory()->create(['case_id' => $case->id]);
 
-        $response = $this->put(route('divorce-cases.children.update', [$case, $child]), [
+        $response = $this->patch(route('divorce-cases.children.update', [$case, $child]), [
             'first_name' => 'Updated',
-            'nationality_no' => '112233445566',
-            'date_of_birth' => '2020-01-01',
+            'last_name' => $child->last_name,
+            'date_of_birth' => $child->date_of_birth,
+            'gender' => $child->gender->value,
+            'birth_certificate_url' => $child->birth_certificate_url,
         ]);
+
 
         $response->assertRedirect();
         $this->assertEquals('Updated', $child->fresh()->first_name);
+
     }
 
     

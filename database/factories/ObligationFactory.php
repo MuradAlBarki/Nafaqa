@@ -17,7 +17,7 @@ class ObligationFactory extends Factory
     {
         return [
             'divorce_case_id' => DivorceCase::factory(),
-            'monthly_amount' => $this->faker->randomFloat(2, 200, 1000),
+            'amount' => $this->faker->randomFloat(2, 200, 1000),
             'start_date' => $this->faker->date(),
             'end_date' => $this->faker->optional()->date(),
             'status' =>  $this->faker->randomElement(StatusEnum::cases()),

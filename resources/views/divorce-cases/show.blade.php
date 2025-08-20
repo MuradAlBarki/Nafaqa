@@ -36,10 +36,10 @@
                 @endif
             </p>
 
-            @if($divorceCase->court_document)
+            @if($divorceCase->court_document_url)
                 <p>
                     <strong>{{ __('Court Document') }}:</strong>
-                    <a href="{{ asset('storage/' . $divorceCase->court_document) }}" target="_blank" class="text-indigo-600 hover:underline">
+                    <a href="{{ asset('storage/' . $divorceCase->court_document_url) }}" target="_blank" class="text-indigo-600 hover:underline">
                         {{ __('View Document') }}
                     </a>
                 </p>

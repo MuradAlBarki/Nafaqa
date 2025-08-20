@@ -17,7 +17,7 @@ class DivorceCase extends Model
         'father_id',
         'case_no',
         'divorce_date',
-        'court_document',
+        'court_document_url',
         'status',
     ];
 

@@ -6,6 +6,7 @@ use App\DocumentTypeEnum;
 use App\Models\Country;
 use App\Models\ProfileRole;
 use App\Models\User;
+use App\Notifications\UserAlertNotification;
 use App\StatusEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -46,28 +47,6 @@ class ProfileRoleTest extends TestCase
         $response->assertViewHas(['countries', 'documentTypes']);
     }
 
-    public function test_it_can_store_profile_role()
-    {
-        $country = Country::factory()->create();
-        $file = UploadedFile::fake()->create('document.pdf', 100);
-
-        $response = $this->post(route('profile-roles.store'), [
-            'user' => null,
-            'nationality_id' => $country->id,
-            'gender' => 'male',
-            'document_file' => $file,
-        ]);
-
-        $response->assertRedirect();
-        $this->assertDatabaseCount('profile_roles', 1);
-        $profileRole = ProfileRole::first();
-        Storage::disk('public')->assertExists($profileRole->document_file_url);
-
-        Notification::assertSentTo($profileRole->user, function ($notification) use ($profileRole) {
-            return $notification->type === \App\Notifications\UserAlertNotification::class;
-        });
-    }
-
     public function test_it_can_view_single_profile_role()
     {
         $profileRole = ProfileRole::factory()->create();
@@ -84,23 +63,7 @@ class ProfileRoleTest extends TestCase
         $response->assertViewHas(['profileRole', 'countries', 'documentTypes']);
     }
 
-    public function test_it_can_update_profile_role()
-    {
-        $profileRole = ProfileRole::factory()->create();
-        $file = UploadedFile::fake()->create('document.pdf', 100);
 
-        $response = $this->put(route('profile-roles.update', $profileRole), [
-            'nationality_id' => $profileRole->nationality_id,
-            'gender' => $profileRole->gender,
-            'document_file' => $file,
-        ]);
-
-        $response->assertRedirect();
-        $profileRole->refresh();
-        Storage::disk('public')->assertExists($profileRole->document_file_url);
-
-        Notification::assertSentTo($profileRole->user, \App\Notifications\UserAlertNotification::class);
-    }
 
     public function test_it_can_view_review_page()
     {

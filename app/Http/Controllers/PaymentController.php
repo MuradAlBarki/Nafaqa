@@ -241,15 +241,6 @@ class PaymentController extends Controller
         ));
     }
 
-
-    public function exportLatePayments()
-    {
-    $this->authorize('exportLatePayments', Payment::class);
-
-    return Excel::download(new LatePaymentsExport, 'late_payments.xlsx');
-    }
-
-
     public function exportLatePayments()
     {
     $this->authorize('exportLatePayments', Payment::class);

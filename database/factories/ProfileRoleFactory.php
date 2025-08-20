@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\DocumentTypeEnum;
 use App\GenderEnum;
 use App\Models\Country;
 use App\Models\User;
@@ -21,7 +22,7 @@ class ProfileRoleFactory extends Factory
             'date_of_birth' => $this->faker->date(),
             'national_no' => $this->faker->unique()->numerify('##########'),
             'IBAN' => $this->faker->iban(),
-            'document_type' => $this->faker->randomElement(['Passport', 'ID Card', 'Driver License']),
+            'document_type' => DocumentTypeEnum::PASSPORT->value,
             'document_no' => $this->faker->unique()->numerify('##########'),
             'document_file_url' => $this->faker->url(),
             'status' => $this->faker->randomElement(StatusEnum::cases()),

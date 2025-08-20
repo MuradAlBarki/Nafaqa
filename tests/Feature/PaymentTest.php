@@ -22,8 +22,8 @@ class PaymentTest extends TestCase
     {
         parent::setUp();
 
+        // Create admin role and user
         Role::create(['name' => 'admin']);
-
         $admin = User::factory()->create();
         $admin->assignRole('admin');
 
@@ -32,16 +32,16 @@ class PaymentTest extends TestCase
 
     public function test_it_can_view_create_payment_form()
     {
-        $divorceCase = DivorceCase::factory()->create();
+        $divorceCase = DivorceCase::factory()->hasObligation()->create();
 
-        $response = $this->get(route('payments.create', $divorceCase));
+        $response = $this->get(route('divorce-cases.payments.create', $divorceCase));
         $response->assertOk();
         $response->assertViewHas('divorceCase');
     }
 
     public function test_it_can_store_payment()
     {
-        $divorceCase = DivorceCase::factory()->create();
+        $divorceCase = DivorceCase::factory()->hasObligation()->create();
 
         $data = [
             'amount' => 1000,
@@ -60,17 +60,17 @@ class PaymentTest extends TestCase
 
     public function test_it_can_view_edit_payment_form()
     {
-        $divorceCase = DivorceCase::factory()->create();
+        $divorceCase = DivorceCase::factory()->hasObligation()->create();
         $payment = Payment::factory()->create(['divorce_case_id' => $divorceCase->id]);
 
-        $response = $this->get(route('payments.edit', [$divorceCase, $payment]));
+        $response = $this->get(route('divorce-cases.payments.edit', [$divorceCase, $payment]));
         $response->assertOk();
         $response->assertViewHas(['divorceCase', 'payment', 'status']);
     }
 
     public function test_it_can_update_payment()
     {
-        $divorceCase = DivorceCase::factory()->create();
+        $divorceCase = DivorceCase::factory()->hasObligation()->create();
         $payment = Payment::factory()->create(['divorce_case_id' => $divorceCase->id]);
 
         $data = [
@@ -79,7 +79,7 @@ class PaymentTest extends TestCase
             'status' => PaymentStatusEnum::Entry->value,
         ];
 
-        $response = $this->patch(route('payments.update', [$divorceCase, $payment]), $data);
+        $response = $this->patch(route('divorce-cases.payments.update', [$divorceCase, $payment]), $data);
         $response->assertRedirect(route('divorce-cases.obligations.show', [$divorceCase, $divorceCase->obligation]));
         $response->assertSessionHas('success');
 
@@ -92,7 +92,8 @@ class PaymentTest extends TestCase
     public function test_it_can_mark_payment_as_paid()
     {
         Storage::fake('public');
-        $divorceCase = DivorceCase::factory()->create();
+
+        $divorceCase = DivorceCase::factory()->hasObligation()->create();
         $payment = Payment::factory()->create([
             'divorce_case_id' => $divorceCase->id,
             'status' => PaymentStatusEnum::Entry->value,
@@ -100,20 +101,23 @@ class PaymentTest extends TestCase
 
         $file = UploadedFile::fake()->create('proof.pdf', 100);
 
-        $response = $this->patch(route('payments.pay', [$divorceCase, $payment]), [
-            'proof_document' => $file
-        ]);
+        $response = $this->patch(
+            route('payments.pay', [$divorceCase, $payment]),
+            ['proof_document' => $file]
+        );
 
         $response->assertRedirect(route('divorce-cases.payments.index', [$divorceCase, $payment]));
+
         $response->assertSessionHas('success');
 
-        $this->assertEquals(PaymentStatusEnum::PaidNotVerified->value, $payment->fresh()->status->value);
-        Storage::disk('public')->assertExists($payment->fresh()->proof_document_url);
+        $paymentFresh = $payment->fresh();
+        $this->assertEquals(PaymentStatusEnum::PaidNotVerified->value, $paymentFresh->status->value);
+        Storage::disk('public')->assertExists($paymentFresh->proof_document_url);
     }
 
     public function test_it_can_create_epayment_success()
     {
-        $divorceCase = DivorceCase::factory()->create();
+        $divorceCase = DivorceCase::factory()->hasObligation()->create();
         $payment = Payment::factory()->create(['divorce_case_id' => $divorceCase->id]);
 
         $response = $this->post(route('payments.success', $payment), [
@@ -131,7 +135,7 @@ class PaymentTest extends TestCase
 
     public function test_it_can_create_epayment_fail()
     {
-        $divorceCase = DivorceCase::factory()->create();
+        $divorceCase = DivorceCase::factory()->hasObligation()->create();
         $payment = Payment::factory()->create(['divorce_case_id' => $divorceCase->id]);
 
         $response = $this->post(route('payments.fail', $payment), [

@@ -32,7 +32,7 @@ class ObligationTest extends TestCase
     {
         $divorceCase = DivorceCase::factory()->create();
 
-        $response = $this->get(route('obligations.create', $divorceCase));
+        $response = $this->get(route('divorce-cases.obligations.create', $divorceCase));
         $response->assertOk();
         $response->assertViewHas('divorceCase');
     }
@@ -46,7 +46,7 @@ class ObligationTest extends TestCase
             'start_date' => now()->format('Y-m-d'),
         ];
 
-        $response = $this->post(route('obligations.store', $divorceCase), $data);
+        $response = $this->post(route('divorce-cases.obligations.store', $divorceCase), $data);
         $response->assertRedirect(route('divorce-cases.index', $divorceCase));
         $response->assertSessionHas('success');
 
@@ -61,7 +61,7 @@ class ObligationTest extends TestCase
         $divorceCase = DivorceCase::factory()->create();
         $obligation = Obligation::factory()->create(['divorce_case_id' => $divorceCase->id]);
 
-        $response = $this->get(route('obligations.edit', [$divorceCase, $obligation]));
+        $response = $this->get(route('divorce-cases.obligations.edit', [$divorceCase, $obligation]));
         $response->assertOk();
         $response->assertViewHas(['divorceCase', 'obligation']);
     }
@@ -76,7 +76,7 @@ class ObligationTest extends TestCase
             'start_date' => now()->addDay()->format('Y-m-d'),
         ];
 
-        $response = $this->patch(route('obligations.update', [$divorceCase, $obligation]), $data);
+        $response = $this->patch(route('divorce-cases.obligations.update', [$divorceCase, $obligation]), $data);
         $response->assertRedirect(route('divorce-cases.index', $divorceCase));
         $response->assertSessionHas('success');
 

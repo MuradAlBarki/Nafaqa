@@ -2,7 +2,7 @@
 namespace Database\Factories;
 
 use App\Models\DivorceCase;
-use App\StatusEnum;
+use App\PaymentStatusEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PaymentFactory extends Factory
@@ -11,11 +11,11 @@ class PaymentFactory extends Factory
     {
         return [
             'divorce_case_id' => DivorceCase::factory(),
-            'monthly_amount' => $this->faker->randomFloat(2, 200, 1000),
+            'amount' => $this->faker->randomFloat(2, 200, 1000),
             'due_date' => $this->faker->date(),
             'payment_date' => $this->faker->date(),
             'proof_document_url' => $this->faker->url(),
-            'status' =>  $this->faker->randomElement(StatusEnum::cases()),
+            'status' =>  $this->faker->randomElement(PaymentStatusEnum::cases()),
         ];
     }
 }

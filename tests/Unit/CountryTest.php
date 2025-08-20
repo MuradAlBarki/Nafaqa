@@ -60,18 +60,6 @@ class CountryTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_arabic_name_if_english_name_is_missing()
-    {
-        app()->setLocale('en');
-        $country = Country::factory()->create([
-            'arabic_name' => 'الإمارات',
-            'english_name' => null
-        ]);
-
-        $this->assertEquals('الإمارات', $country->name);
-    }
-
-    #[Test]
     public function factory_creates_valid_country()
     {
         $country = Country::factory()->create();

@@ -18,14 +18,16 @@ class ChildTest extends TestCase
     public function it_has_fillable_attributes()
     {
         $fillable = [
-            'case_id',
-            'first_name',
-            'nationality_no',
-            'date_of_birth',
-            'gender',
-            'status',
-        ];
-        $this->assertEquals($fillable, (new Child())->getFillable());
+        'case_id',
+        'first_name',
+        'nationality_no',
+        'date_of_birth',
+        'gender',
+        'status',
+        'birth_certificate_url',
+    ];
+    $this->assertEquals($fillable, (new Child())->getFillable());
+
     }
 
     #[Test]

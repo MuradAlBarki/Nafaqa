@@ -26,7 +26,7 @@ class DivorceCaseTest extends TestCase
             'father_id',
             'case_no',
             'divorce_date',
-            'court_document',
+            'court_document_url',
             'status',
         ];
         $this->assertEquals($fillable, (new DivorceCase())->getFillable());

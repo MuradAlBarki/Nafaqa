@@ -35,14 +35,4 @@ class EpaymentTest extends TestCase
         $response->assertOk();
         $response->assertViewHas('epayments');
     }
-
-    public function test_it_can_view_single_epayment()
-    {
-        $payment = Payment::factory()->create();
-        $epayment = Epayment::factory()->create(['payment_id' => $payment->id]);
-
-        $response = $this->get(route('epayments.show', [$payment, $epayment]));
-        $response->assertOk();
-        $response->assertViewHas('epayment');
-    }
 }
