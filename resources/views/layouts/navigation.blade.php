@@ -27,7 +27,6 @@
                         <x-nav-link :href="route('profile-roles.index')" :active="request()->routeIs('profile-roles.*')">
                         {{ __('profileRoles') }}
                         </x-nav-link>
-
                     @endif
 
                     @if(auth()->user()->can('divorceCases.viewAny'))
@@ -44,9 +43,9 @@
                                 {{ __('My Profile') }}
                             </x-nav-link>
 
-                                     <x-nav-link :href="route('divorce-cases.userIndex')" :active="request()->routeIs('divorce-cases.*')">
-                            {{ __('Divorce Cases') }}
-                        </x-nav-link>
+                            <x-nav-link :href="route('divorce-cases.userIndex')" :active="request()->routeIs('divorce-cases.*')">
+                                {{ __('Divorce Cases') }}
+                            </x-nav-link>
                         @else
                             <x-nav-link :href="route('profile-roles.create')" 
                                         :active="request()->routeIs('profile-roles.create')">
@@ -55,58 +54,54 @@
                         @endif
                     @endif
 
+                    @if(auth()->user()->can('exportLatePayments', App\Models\Payment::class) 
+                        || auth()->user()->can('export', App\Models\ProfileRole::class))              
+                        <div x-data="{
+                                open: {{ request()->routeIs('profile-roles.export','payments.export-late') ? 'true' : 'false' }},
+                                toggle() { this.open = !this.open },
+                                isActive() { return this.open || {{ request()->routeIs('profile-roles.export','payments.export-late') ? 'true' : 'false' }} }
+                            }" 
+                             x-on:click.away="open = false"
+                             class="relative space-x-8 sm:-my-px sm:ms-10 sm:flex">
 
-@if(auth()->user()->can('exportLatePayments', App\Models\Payment::class) 
-    || auth()->user()->can('export', App\Models\ProfileRole::class))              
-<div x-data="{
-        open: {{ request()->routeIs('profile-roles.export','payments.export-late') ? 'true' : 'false' }},
-        toggle() { this.open = !this.open },
-        isActive() { return this.open || {{ request()->routeIs('profile-roles.export','payments.export-late') ? 'true' : 'false' }} }
-    }" 
-     x-on:click.away="open = false"
-     class="relative space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <!-- Parent Reports -->
+                            <x-nav-link 
+                                href="#"
+                                @click.prevent="toggle()"
+                                :active="request()->routeIs('profile-roles.export','payments.export-late')"
+                                class="flex items-center"
+                            >
+                                {{ __('Reports') }}
+                                <svg :class="{'rotate-180': open}" class="w-4 h-4 ml-1 transform transition-transform"
+                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </x-nav-link>
 
-    <!-- Parent Reports -->
-    <x-nav-link 
-        href="#"
-        @click.prevent="toggle()"
-        :active="request()->routeIs('profile-roles.export','payments.export-late')"
-        class="flex items-center"
-    >
-        {{ __('Reports') }}
-        <svg :class="{'rotate-180': open}" class="w-4 h-4 ml-1 transform transition-transform"
-             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M19 9l-7 7-7-7" />
-        </svg>
-    </x-nav-link>
+                            <!-- Child links -->
+                            <div x-show="open" x-collapse x-cloak
+                                 class="absolute top-full right-0 bg-white border rounded-lg shadow-md mt-1 w-48 z-50">
+                                <div class="py-1">
+                                    @can('export', App\Models\ProfileRole::class)
+                                        <x-nav-link :href="route('profile-roles.export')" 
+                                                    :active="request()->routeIs('profile-roles.export')"
+                                                    class="block px-4 py-2">
+                                            {{ __('Export Profiles') }}
+                                        </x-nav-link>
+                                    @endcan
 
-    <!-- Child links -->
-    <div x-show="open" x-collapse 
-         class="absolute top-full right-0 bg-white border rounded-lg shadow-md mt-1 w-48 z-50">
-        <div class="py-1">
-            @can('export', App\Models\ProfileRole::class)
-                <x-nav-link :href="route('profile-roles.export')" 
-                            :active="request()->routeIs('profile-roles.export')"
-                            class="block px-4 py-2">
-                    {{ __('Export Profiles') }}
-                </x-nav-link>
-            @endcan
-
-            @can('exportLatePayments', App\Models\Payment::class)
-                <x-nav-link :href="route('payments.export-late')" 
-                            :active="request()->routeIs('payments.export-late')"
-                            class="block px-4 py-2">
-                    {{ __('Export Late Payments') }}
-                </x-nav-link>
-            @endcan
-        </div>
-    </div>
-</div>
-
-@endif
-
-
+                                    @can('exportLatePayments', App\Models\Payment::class)
+                                        <x-nav-link :href="route('payments.export-late')" 
+                                                    :active="request()->routeIs('payments.export-late')"
+                                                    class="block px-4 py-2">
+                                            {{ __('Export Late Payments') }}
+                                        </x-nav-link>
+                                    @endcan
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -134,12 +129,12 @@
                     </button>
 
                     <!-- Notifications Dropdown -->
-                    <div x-show="openNotifications" @click.away="openNotifications = false"
+                    <div x-show="openNotifications" x-cloak @click.away="openNotifications = false"
                          class="absolute left-0 mt-2 w-80 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                         <div class="p-2">
                             @forelse($notifications as $notification)
                                 <a href="{{ route('notifications.read', $notification->id) }}" 
-   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     {{ __($notification->data['message']) ?? 'Notification' }}
                                     <span class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</span>
                                 </a>
@@ -151,35 +146,33 @@
                 </div>
 
                 <!-- User Dropdown -->
-<!-- User Dropdown like Reports -->
-<div x-data="{ open: false }" x-on:click.away="open = false" class="relative ms-4">
-    <button @click="open = !open" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-        <div>{{ Auth::user()->name }}</div>
-        <div class="ms-1">
-            <svg :class="{'rotate-180': open}" class="fill-current h-4 w-4 transform transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-            </svg>
-        </div>
-    </button>
+                <div x-data="{ open: false }" x-cloak x-on:click.away="open = false" class="relative ms-4">
+                    <button @click="open = !open" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <div>{{ Auth::user()->name }}</div>
+                        <div class="ms-1">
+                            <svg :class="{'rotate-180': open}" class="fill-current h-4 w-4 transform transition-transform" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </button>
 
-    <!-- Dropdown Menu -->
-    <div x-show="open" x-collapse class="absolute top-full left-0 bg-white border rounded-lg shadow-md mt-1 w-48 z-50">
-        <div class="py-1">
-            <x-nav-link :href="route('profile.edit')" class="block px-4 py-2">
-                {{ __('Profile') }}
-            </x-nav-link>
+                    <!-- Dropdown Menu -->
+                    <div x-show="open" x-collapse x-cloak class="absolute top-full left-0 bg-white border rounded-lg shadow-md mt-1 w-48 z-50">
+                        <div class="py-1">
+                            <x-nav-link :href="route('profile.edit')" class="block px-4 py-2">
+                                {{ __('Profile') }}
+                            </x-nav-link>
 
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <x-nav-link :href="route('logout')" class="block px-4 py-2"
-                        onclick="event.preventDefault(); this.closest('form').submit();">
-                    {{ __('Log Out') }}
-                </x-nav-link>
-            </form>
-        </div>
-    </div>
-</div>
-
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <x-nav-link :href="route('logout')" class="block px-4 py-2"
+                                            onclick="event.preventDefault(); this.closest('form').submit();">
+                                    {{ __('Log Out') }}
+                                </x-nav-link>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Hamburger -->
@@ -217,7 +210,7 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault(); this.closest('form').submit();">
+                                           onclick="event.preventDefault(); this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>
@@ -225,3 +218,5 @@
         </div>
     </div>
 </nav>
+
+<style>[x-cloak] { display: none !important; }</style>
